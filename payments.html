@@ -6,6 +6,11 @@
 <meta name="description" content="NaijaSwap Payments — Secure local and international payment methods with escrow protection.">
 <meta name="author" content="RadiantWaves Media Ltd">
 <meta name="theme-color" content="#1a1a2e">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:;">
+<meta name="rating" content="general">
+<meta name="robots" content="index, follow">
 <link rel="manifest" href="manifest.json">
 <title>Payments — NaijaSwap | RadiantWaves Media Ltd</title>
 <style>
@@ -235,16 +240,24 @@ footer {
 </head>
 <body>
 
+<!-- DEMO PLATFORM NOTICE — helps prevent false phishing flags on mobile browsers -->
+<div style="background: linear-gradient(90deg, #1a1a2e, #0f3460); color: #fff; text-align: center; padding: 10px 1rem; font-size: 0.82rem; font-weight: 600; position: relative; z-index: 1001; border-bottom: 2px solid var(--primary);">
+  <span style="background: var(--primary); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 8px;">Demo</span>
+  This is a demonstration platform by RadiantWaves Media Ltd. No real payments are processed here. For enquiries: support@radiantwavesmedia.com
+</div>
+
 <header class="topbar">
   <div class="logo"><a href="index.html">NaijaSwap</a></div>
   <nav>
     <a href="index.html">Home</a>
     <a href="listings.html">Listings</a>
     <a href="sell.html">Sell</a>
+    <a href="trade.html">Trade Desk</a>
+    <a href="requests.html">Requests</a>
+    <a href="news.html">News & Export Guide</a>
     <a href="chat.html">Chat</a>
     <a href="wallet.html">Wallet</a>
     <a href="payments.html" class="active">Payments</a>
-    <a href="delivery.html">Delivery</a>
     <a href="profile.html">Profile</a>
   </nav>
   <div class="header-actions">
@@ -263,7 +276,7 @@ footer {
 <!-- LOCAL PAYMENT SECTION -->
 <div id="localPaymentSection">
   <section class="section">
-    <div class="section-title">Complete Your Local Purchase</div>
+    <div class="section-title">Complete Your Local Purchase <span style="background:#e8e8e8;color:#555;padding:3px 10px;border-radius:12px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;margin-left:8px;vertical-align:middle;">Demo</span></div>
     <div class="info-box">
       <strong>Secure Local Checkout:</strong> Choose a payment method for your order. Sensitive card credentials are entered only through an authorised payment provider checkout when available.
     </div>
@@ -398,7 +411,7 @@ footer {
 <!-- INTERNATIONAL PAYMENT SECTION -->
 <div id="intlPaymentSection" class="hidden">
   <section class="section">
-    <div class="section-title">Complete Your International B2B Payment</div>
+    <div class="section-title">Complete Your International B2B Payment <span style="background:#e8e8e8;color:#555;padding:3px 10px;border-radius:12px;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;margin-left:8px;vertical-align:middle;">Demo</span></div>
 
     <!-- NIGERIAN EXPORT PAYMENT STRUCTURE — FRONT AND CENTER -->
     <div class="contract-banner">
@@ -727,19 +740,20 @@ footer {
   <div class="footer-grid">
     <div>
       <h3>NaijaSwap</h3>
-      <p>A global marketplace connecting buyers and sellers securely worldwide.</p>
+      <p>A global marketplace + B2B trade desk connecting verified African suppliers with international buyers.</p>
       <p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p>
     </div>
     <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="news.html">News & Export Guide</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
     <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
     <div>
       <h3>Contact</h3>
       <p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p>
-      <p>Available Worldwide - 45+ Countries</p>
+      <p>Available Worldwide &bull; 45+ Countries</p>
     </div>
   </div>
   <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
-  <div class="company-footer">RadiantWaves Media Ltd - Registered Company - Secure Escrow Payments - Verified Sellers - Global Shipping</div>
+  <div class="company-footer">RadiantWaves Media Ltd &bull; Registered Company &bull; Secure Escrow Payments &bull; Verified Sellers &bull; Global Shipping &bull; B2B Export Desk</div>
 </footer>
 
 <div class="toast" id="toast"></div>
