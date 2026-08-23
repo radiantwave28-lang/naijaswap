@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Messages — Chat with buyers and sellers on NaijaSwap.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="Messages — Chat with buyers, sellers & AI on NaijaSwap.">
 <meta name="author" content="RadiantWaves Media Ltd">
 <meta name="theme-color" content="#1a1a2e">
 <link rel="manifest" href="manifest.json">
@@ -82,6 +82,7 @@ body::before {
 .conversation-item:hover, .conversation-item.active { background: white; }
 .conversation-item.active { border-left: 3px solid var(--primary); }
 .conversation-avatar { width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
+.conversation-avatar.ai { background: linear-gradient(135deg, var(--trade-green), var(--trade-gold)); }
 .conversation-info { flex: 1; min-width: 0; }
 .conversation-name { font-weight: 700; font-size: 0.85rem; margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center; }
 .conversation-time { font-size: 0.65rem; color: var(--gray); font-weight: 500; }
@@ -102,6 +103,7 @@ body::before {
 .chat-header { padding: 12px 1.2rem; border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; justify-content: space-between; }
 .chat-header-info { display: flex; align-items: center; gap: 10px; }
 .chat-header-avatar { width: 36px; height: 36px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; }
+.chat-header-avatar.ai { background: linear-gradient(135deg, var(--trade-green), var(--trade-gold)); }
 .chat-header-name { font-weight: 700; font-size: 0.9rem; }
 .chat-header-status { font-size: 0.75rem; color: var(--gray); }
 .chat-header-actions { display: flex; gap: 6px; }
@@ -113,10 +115,19 @@ body::before {
 .message { max-width: 75%; padding: 12px 16px; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; word-break: break-word; position: relative; }
 .message-sent { align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-bottom-right-radius: 4px; }
 .message-received { align-self: flex-start; background: #f1f5f9; color: var(--dark); border-bottom-left-radius: 4px; }
+.message-received.ai-msg { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #bbf7d0; color: #14532d; }
 .message-time { font-size: 0.65rem; opacity: 0.8; margin-top: 5px; text-align: right; }
 .message-system { align-self: center; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; font-size: 0.8rem; padding: 10px 16px; border-radius: 8px; max-width: 85%; text-align: center; }
 .message-system strong { display: block; margin-bottom: 3px; }
 .msg-fail { position: absolute; bottom: 2px; right: 8px; font-size: 0.6rem; color: #fee2e2; background: #dc2626; padding: 1px 6px; border-radius: 4px; }
+.typing-indicator { display: flex; gap: 4px; padding: 10px 14px; align-self: flex-start; background: #f1f5f9; border-radius: 12px; border-bottom-left-radius: 4px; }
+.typing-indicator span { width: 8px; height: 8px; background: var(--gray); border-radius: 50%; animation: typingBounce 1.4s infinite ease-in-out both; }
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
 
 .chat-input-area { padding: 12px 1.2rem; border-top: 1px solid #e0e0e0; display: flex; gap: 10px; align-items: flex-end; }
 .chat-input { flex: 1; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; resize: none; min-height: 40px; max-height: 100px; font-family: inherit; }
@@ -125,23 +136,9 @@ body::before {
 .chat-send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,107,53,0.3); }
 .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.ai-assistant-panel { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; width: 350px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; display: none; flex-direction: column; max-height: 500px; }
-.ai-assistant-panel.open { display: flex; }
-.ai-assistant-header { padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); display: flex; align-items: center; justify-content: space-between; }
-.ai-assistant-header h4 { font-size: 0.95rem; }
-.ai-assistant-header button { background: none; border: none; color: var(--white); font-size: 1.2rem; cursor: pointer; }
-.ai-assistant-body { padding: 1rem; overflow-y: auto; flex: 1; }
-.ai-assistant-body p { font-size: 0.9rem; color: var(--gray); margin-bottom: 0.8rem; }
-.ai-assistant-links { display: flex; flex-direction: column; gap: 0.5rem; }
-.ai-assistant-links a { display: block; padding: 0.6rem 0.8rem; background: var(--light); border-radius: 8px; color: var(--dark); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: var(--transition); }
-.ai-assistant-links a:hover { background: var(--primary); color: var(--white); }
-.ai-assistant-toggle { position: fixed; bottom: 2rem; right: 2rem; z-index: 998; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); border: none; font-size: 1.5rem; cursor: pointer; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.ai-assistant-toggle:hover { transform: scale(1.1); }
-
 .toast { position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white; padding: 14px 24px; border-radius: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 200; }
 .toast.show { transform: translateY(0); opacity: 1; }
 
-/* Modal */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
 .modal-overlay.show { display: flex; }
 .modal { width: min(450px, 100%); max-height: 90vh; overflow-y: auto; background: white; border-radius: 15px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
@@ -168,10 +165,9 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
   .chat-wrapper { padding: 1rem; }
   .chat-layout { grid-template-columns: 1fr; height: auto; min-height: 400px; }
   .conversation-list { display: none; }
-  .ai-assistant-panel { width: calc(100% - 2rem); right: 1rem; bottom: 5rem; }
+  .conversation-list.mobile-open { display: flex; position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh; z-index: 999; box-shadow: 4px 0 20px rgba(0,0,0,0.2); }
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -187,9 +183,9 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
     <a href="sell.html">Sell</a>
     <a href="trade.html">Trade Desk</a>
     <a href="requests.html">Requests</a>
+    <a href="news.html">News & Export Guide</a>
     <a href="chat.html" class="active">Chat</a>
     <a href="wallet.html">Wallet</a>
-    <a href="wishlist.html">Wishlist</a>
     <a href="profile.html">Profile</a>
   </nav>
   <div class="header-actions">
@@ -217,6 +213,9 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
 </div>
 
 <div class="chat-wrapper">
+  <!-- Mobile toggle for conversation list -->
+  <button id="mobileConvoToggle" style="display:none;margin-bottom:10px;padding:8px 14px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;" onclick="toggleMobileConvoList()">&#9776; Conversations</button>
+
   <div class="chat-layout">
     <div class="conversation-list" id="conversationList">
       <div class="conversation-search">
@@ -257,7 +256,9 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
         <div class="no-convos" style="align-self:center;margin:auto;">
           <div style="font-size:2.5rem;margin-bottom:0.5rem;">&#128172;</div>
           <strong>No conversation selected</strong><br>
-          <span style="font-size:0.8rem;">Click "+ New Chat" to start messaging, or select an existing conversation.</span>
+          <span style="font-size:0.8rem;">Click "+ New Chat" to start messaging, or select an existing conversation.<br><br>
+          <button onclick="startAIChat()" style="padding:10px 18px;background:linear-gradient(135deg,var(--trade-green),var(--trade-gold));color:white;border:none;border-radius:25px;font-weight:700;cursor:pointer;">&#129302; Chat with NaijaSwap AI</button>
+          </span>
         </div>
       </div>
 
@@ -278,28 +279,10 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
       <div class="form-group"><label>Contact ID (optional)</label><input type="text" id="ncId" placeholder="User ID or leave blank"></div>
       <div class="form-group"><label>Product / Topic</label><input type="text" id="ncProduct" placeholder="e.g. Hardwood Charcoal"></div>
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('newChatModal')" style="padding:8px 16px;border:1px solid #ddd;background:white;border-radius:8px;cursor:pointer;font-weight:600;">Cancel</button>
-        <button type="submit" class="btn btn-primary" style="padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Start Chat</button>
+        <button type="button" onclick="closeModal('newChatModal')" style="padding:8px 16px;border:1px solid #ddd;background:white;border-radius:8px;cursor:pointer;font-weight:600;">Cancel</button>
+        <button type="submit" style="padding:8px 16px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Start Chat</button>
       </div>
     </form>
-  </div>
-</div>
-
-<button class="ai-assistant-toggle" id="aiToggle" title="AI Assistant">&#129302;</button>
-<div class="ai-assistant-panel" id="aiPanel">
-  <div class="ai-assistant-header"><h4>&#129302; NaijaSwap AI Assistant</h4><button id="aiClose">&times;</button></div>
-  <div class="ai-assistant-body">
-    <p>Hi! I'm here to help you navigate NaijaSwap. What would you like to do?</p>
-    <div class="ai-assistant-links">
-      <a href="listings.html">&#128269; Browse Listings</a>
-      <a href="sell.html">&#128230; Sell an Item</a>
-      <a href="trade.html">&#127758; Trade Desk</a>
-      <a href="requests.html">&#128308; Post Buying Request</a>
-      <a href="wallet.html">&#128176; Check Wallet</a>
-      <a href="chat.html">&#128172; Open Chat</a>
-      <a href="profile.html">&#128100; View Profile</a>
-      <a href="wishlist.html">&#10084;&#65039; My Wishlist</a>
-    </div>
   </div>
 </div>
 
@@ -307,7 +290,7 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
   <div class="footer-grid">
     <div><h3>NaijaSwap</h3><p>A global marketplace + B2B trade desk connecting verified African suppliers with international buyers.</p><p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p></div>
     <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
-    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
+    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="news.html">News & Export Guide</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
     <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
     <div><h3>Contact</h3><p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p><p>Available Worldwide &bull; 45+ Countries</p></div>
   </div>
@@ -318,23 +301,16 @@ footer { background: var(--dark); color: var(--white); padding: 3rem; position: 
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://kysnaeklegcazdwfgxysy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5c25hZWtsZWdjYXpkd2ZneHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjI4MjksImV4cCI6MjA5OTA5ODgyOX0.SQiVyeqQs9lcwree7QRjLqW0Pmbrz2Tq_2MEtwvutsk';
-let supabaseClient = null;
-
-try {
-  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  console.log('[CHAT] Supabase client initialized');
-} catch (e) {
-  console.error('[CHAT] Supabase init failed:', e);
-}
+/* ============================================================
+   NAIJASWAP CHAT — Fully Working LocalStorage + AI Assistant
+   ============================================================ */
 
 let currentUser = null;
 let activeConversationId = null;
-let messagesSubscription = null;
 let conversations = [];
 let isSending = false;
 
+/* ---- AUTH ---- */
 function getCurrentUser() {
   const userData = localStorage.getItem('naijaswap_user');
   if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
@@ -343,7 +319,6 @@ function getCurrentUser() {
 
 function initAuth() {
   currentUser = getCurrentUser();
-  console.log('[CHAT] Current user:', currentUser);
   const loginBtn = document.getElementById('loginButton');
   const profileBtn = document.getElementById('profileButton');
   if (currentUser) {
@@ -359,35 +334,7 @@ function initAuth() {
   }
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function setMode(mode) {
-  localStorage.setItem('naijaswap_mode', mode);
-  const switchEl = document.getElementById('modeSwitch');
-  if (mode === 'b2b') { switchEl.classList.add('b2b-active'); }
-  else { switchEl.classList.remove('b2b-active'); }
-}
-
-function initMode() {
-  const savedMode = localStorage.getItem('naijaswap_mode') || 'b2c';
-  setMode(savedMode);
-}
-
-const aiPanel = document.getElementById('aiPanel');
-const aiToggle = document.getElementById('aiToggle');
-const aiClose = document.getElementById('aiClose');
-function toggleAI() { aiPanel.classList.toggle('open'); }
-aiToggle.addEventListener('click', toggleAI);
-aiClose.addEventListener('click', toggleAI);
-
-function openNewChatModal() { document.getElementById('newChatModal').classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-
+/* ---- UTILITIES ---- */
 function escapeHtml(text) {
   if (!text) return '';
   const div = document.createElement('div');
@@ -395,18 +342,201 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-function renderConversationList(list) {
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function generateId() {
+  return 'ns_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function nowISO() { return new Date().toISOString(); }
+function nowTime() { return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+function nowDate() { return new Date().toLocaleDateString(); }
+
+/* ---- LOCALSTORAGE HELPERS ---- */
+function getConversations() {
+  try {
+    const raw = localStorage.getItem('naijaswap_conversations');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveConversations(list) {
+  localStorage.setItem('naijaswap_conversations', JSON.stringify(list));
+}
+
+function getMessages(convoId) {
+  try {
+    const raw = localStorage.getItem('naijaswap_msgs_' + convoId);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveMessages(convoId, msgs) {
+  localStorage.setItem('naijaswap_msgs_' + convoId, JSON.stringify(msgs));
+}
+
+/* ---- AI ASSISTANT ENGINE ---- */
+const AI_NAME = 'NaijaSwap AI';
+const AI_ID = 'naijaswap_ai_bot';
+
+const AI_RESPONSES = {
+  greetings: [
+    "Hello! Welcome to NaijaSwap. I'm your AI assistant. How can I help you today?",
+    "Hi there! I'm the NaijaSwap AI. Ask me about buying, selling, exporting, or shipping.",
+    "Welcome! I can help you with product listings, export compliance, shipping guides, and more."
+  ],
+  charcoal: [
+    "Charcoal exports from Nigeria currently face regulatory restrictions. Before booking, confirm: (1) Nigeria Customs export authorization, (2) Shipping line acceptance, (3) DG classification UN1361/Class 4.2, and (4) Terminal acceptance. See our News & Export Guide for full details.",
+    "Important: Do not load a charcoal container until you have confirmed the shipping line and terminal will accept it under DG requirements. Storage costs at Lekki reached ₦30,240 per container per day in 2025."
+  ],
+  shipping: [
+    "For Nigerian exports, standard payment terms are 70-80% against B/L copy and 20-30% on arrival & inspection. Always verify your shipping line accepts the commodity before gate-in.",
+    "Key shipping checklist: Container number → Terminal → Shipping line → DG status → Customs status → Permit status → Booking status → Gate-in date → Free-storage expiry."
+  ],
+  payment: [
+    "NaijaSwap supports secure escrow payments. For B2B exports, we recommend: 70-80% against B/L copy, 20-30% on arrival & inspection. Never send money outside the platform.",
+    "Your wallet on NaijaSwap is protected by escrow. Funds are only released when both buyer and seller confirm satisfaction."
+  ],
+  sell: [
+    "To sell on NaijaSwap: (1) Create a listing with clear photos and specs, (2) Set your price and currency, (3) Respond to buyer messages promptly, (4) Use our escrow for secure payment.",
+    "For B2B sellers: Get your NEPC registration and verification badge to attract European buyers. Verified suppliers get priority placement."
+  ],
+  buy: [
+    "To buy on NaijaSwap: Browse listings, message sellers, negotiate terms, and pay securely via escrow. For B2B, post a Buying Request on the Trade Desk.",
+    "Looking for Nigerian agricultural exports? We have verified suppliers for cocoa, cashew, sesame, ginger, hibiscus, shea, and more."
+  ],
+  export: [
+    "Nigeria exported ₦767.2 billion ($568M) in agricultural products in Q4 2025. Top commodities: cashew, sesame, cocoa, ginger, hibiscus, shea, soybeans.",
+    "Export compliance requirements: NEPC registration, Customs SGD, phytosanitary certificate, Certificate of Origin, and pre-shipment inspection (SGS/Bureau Veritas for EU buyers)."
+  ],
+  help: [
+    "I can help you with: (1) Buying & selling on NaijaSwap, (2) Export compliance & documentation, (3) Shipping & dangerous goods requirements, (4) Payment & escrow, (5) Finding verified suppliers. Just ask!",
+    "Need human support? Email support@radiantwavesmedia.com or use the Help Centre. I'm available 24/7 for quick questions."
+  ],
+  default: [
+    "I'm not sure I understood that. I can help with: buying, selling, charcoal exports, shipping, payments, or finding products. What would you like to know?",
+    "Could you rephrase? I specialize in NaijaSwap marketplace questions, Nigerian export regulations, and trade guidance.",
+    "I can assist with product searches, export documentation, shipping compliance, and payment security. How can I help?"
+  ]
+};
+
+function getAIResponse(userText) {
+  const t = userText.toLowerCase();
+  let pool = AI_RESPONSES.default;
+
+  if (/\b(hi|hello|hey|good morning|good afternoon|good evening|welcome)\b/.test(t)) pool = AI_RESPONSES.greetings;
+  else if (/\b(charcoal|wood|firewood|carbon)\b/.test(t)) pool = AI_RESPONSES.charcoal;
+  else if (/\b(ship|shipping|container|terminal|port|logistics|freight|cargo|dg|dangerous|un1361|lekki|demurrage|storage)\b/.test(t)) pool = AI_RESPONSES.shipping;
+  else if (/\b(pay|payment|escrow|money|transfer|price|cost|fund|wallet|invoice)\b/.test(t)) pool = AI_RESPONSES.payment;
+  else if (/\b(sell|seller|vendor|supplier|exporter|listing|post)\b/.test(t)) pool = AI_RESPONSES.sell;
+  else if (/\b(buy|buyer|purchase|order|product|item|shop)\b/.test(t)) pool = AI_RESPONSES.buy;
+  else if (/\b(export|nepc|customs|compliance|documentation|permit|license|agriculture|agri|cashew|cocoa|sesame|ginger|hibiscus|shea)\b/.test(t)) pool = AI_RESPONSES.export;
+  else if (/\b(help|support|assist|question|how to|what is|guide)\b/.test(t)) pool = AI_RESPONSES.help;
+
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function startAIChat() {
+  // Check if AI convo exists
+  let aiConvo = conversations.find(c => c.id === 'ai_naijaswap');
+  if (!aiConvo) {
+    aiConvo = {
+      id: 'ai_naijaswap',
+      name: AI_NAME,
+      avatar: '&#129302;',
+      isAI: true,
+      preview: 'Hello! Welcome to NaijaSwap...',
+      time: nowTime(),
+      unread: 0,
+      deal_id: 'AI Support',
+      product: 'General',
+      value: 'Free',
+      status: 'Online',
+      payment: '24/7'
+    };
+    conversations.unshift(aiConvo);
+    saveConversations(conversations);
+
+    // Seed welcome message
+    const msgs = [{
+      id: generateId(),
+      sender_id: AI_ID,
+      sender_name: AI_NAME,
+      content: "Hello! I'm the NaijaSwap AI Assistant. I can help you with buying, selling, export compliance, shipping, and payments. What would you like to know?",
+      created_at: nowISO()
+    }];
+    saveMessages('ai_naijaswap', msgs);
+  }
+  renderConversationList();
+  selectConversation('ai_naijaswap');
+}
+
+function triggerAIReply(convoId, userText) {
+  // Show typing indicator
+  const container = document.getElementById('messagesContainer');
+  const typingId = 'typing_' + Date.now();
+  const typingDiv = document.createElement('div');
+  typingDiv.id = typingId;
+  typingDiv.className = 'typing-indicator';
+  typingDiv.innerHTML = '<span></span><span></span><span></span>';
+  container.appendChild(typingDiv);
+  container.scrollTop = container.scrollHeight;
+
+  // Delay for realism (1.5 - 3 seconds)
+  const delay = 1500 + Math.random() * 1500;
+
+  setTimeout(() => {
+    const el = document.getElementById(typingId);
+    if (el) el.remove();
+
+    const reply = getAIResponse(userText);
+    const msg = {
+      id: generateId(),
+      sender_id: AI_ID,
+      sender_name: AI_NAME,
+      content: reply,
+      created_at: nowISO()
+    };
+
+    const msgs = getMessages(convoId);
+    msgs.push(msg);
+    saveMessages(convoId, msgs);
+
+    // Update sidebar preview
+    const conv = conversations.find(c => c.id === convoId);
+    if (conv) {
+      conv.preview = reply.substring(0, 40) + (reply.length > 40 ? '...' : '');
+      conv.time = nowTime();
+      saveConversations(conversations);
+      renderConversationList();
+    }
+
+    // Render if still active
+    if (activeConversationId === convoId) {
+      renderSingleMessage(msg);
+    }
+  }, delay);
+}
+
+/* ---- CONVERSATION LIST ---- */
+function renderConversationList() {
   const container = document.getElementById('convoItems');
-  if (!list || list.length === 0) {
-    container.innerHTML = '<div class="no-convos">No conversations yet.<br>Click "+ New Chat" to start messaging.</div>';
+  if (!conversations.length) {
+    container.innerHTML = '<div class="no-convos">No conversations yet.<br>Click "+ New Chat" or chat with AI.</div>';
     return;
   }
   let html = '';
-  list.forEach(c => {
+  conversations.forEach(c => {
     const activeClass = (activeConversationId === c.id) ? 'active' : '';
     const badge = c.unread ? `<span class="conversation-badge">${c.unread}</span>` : '';
+    const avatarClass = c.isAI ? 'ai' : '';
     html += `<div class="conversation-item ${activeClass}" onclick="selectConversation('${c.id}')" data-id="${c.id}" data-name="${escapeHtml(c.name).toLowerCase()}">
-      <div class="conversation-avatar">${escapeHtml(c.avatar)}</div>
+      <div class="conversation-avatar ${avatarClass}">${c.avatar || '?'}</div>
       <div class="conversation-info">
         <div class="conversation-name">${escapeHtml(c.name)}<span class="conversation-time">${escapeHtml(c.time)}</span></div>
         <div class="conversation-preview">${escapeHtml(c.preview)}</div>
@@ -422,64 +552,47 @@ function filterConversations(query) {
   });
 }
 
+/* ---- SELECT & LOAD ---- */
 function selectConversation(id) {
-  console.log('[CHAT] Selecting conversation:', id);
   activeConversationId = id;
   const conv = conversations.find(c => c.id === id);
-  if (!conv) { console.warn('[CHAT] Conversation not found:', id); return; }
+  if (!conv) return;
 
   document.querySelectorAll('.conversation-item').forEach(el => el.classList.remove('active'));
   const activeEl = document.querySelector(`.conversation-item[data-id="${id}"]`);
   if (activeEl) activeEl.classList.add('active');
 
+  // Update header
   document.getElementById('ctxDeal').textContent = conv.deal_id || '—';
   document.getElementById('ctxProduct').textContent = conv.product || '—';
   document.getElementById('ctxValue').textContent = conv.value || '—';
   document.getElementById('ctxStatus').textContent = conv.status || '—';
   document.getElementById('ctxPayment').textContent = conv.payment || '—';
-  document.getElementById('chatAvatar').textContent = conv.avatar || '?';
+  document.getElementById('chatAvatar').innerHTML = conv.avatar || '?';
+  if (conv.isAI) document.getElementById('chatAvatar').classList.add('ai');
+  else document.getElementById('chatAvatar').classList.remove('ai');
   document.getElementById('chatName').textContent = conv.name;
-  document.getElementById('chatStatus').textContent = 'Active';
+  document.getElementById('chatStatus').textContent = conv.isAI ? 'Online — Replies instantly' : (conv.status || 'Active');
 
-  loadMessages(id);
-  if (currentUser && supabaseClient) subscribeToMessages(id);
-}
+  // Load messages
+  const msgs = getMessages(id);
+  renderMessageList(msgs);
 
-async function loadMessages(convoId) {
-  console.log('[CHAT] Loading messages for:', convoId);
-  const container = document.getElementById('messagesContainer');
-  container.innerHTML = '<div class="no-convos" style="align-self:center;margin:auto;">Loading messages...</div>';
-
-  // Try Supabase first
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', convoId)
-        .order('created_at', { ascending: true });
-      if (error) throw error;
-      if (data && data.length > 0) {
-        renderMessageList(data);
-        return;
-      }
-    } catch (e) {
-      console.warn('[CHAT] Supabase messages failed, trying localStorage:', e.message);
-    }
-  }
-
-  // Fallback to localStorage
-  const localMsgs = getLocalMessages(convoId);
-  if (localMsgs.length > 0) {
-    renderMessageList(localMsgs);
-  } else {
-    container.innerHTML = '<div class="no-convos" style="align-self:center;margin:auto;">No messages yet.<br>Type below to start the conversation.</div>';
+  // Mark as read
+  if (conv.unread) {
+    conv.unread = 0;
+    saveConversations(conversations);
+    renderConversationList();
   }
 }
 
 function renderMessageList(messages) {
   const container = document.getElementById('messagesContainer');
   container.innerHTML = '';
+  if (!messages.length) {
+    container.innerHTML = '<div class="no-convos" style="align-self:center;margin:auto;">No messages yet.<br>Type below to start the conversation.</div>';
+    return;
+  }
   let lastDate = null;
   messages.forEach(m => {
     const msgDate = new Date(m.created_at).toLocaleDateString();
@@ -490,332 +603,191 @@ function renderMessageList(messages) {
       container.appendChild(dateDiv);
       lastDate = msgDate;
     }
-    const isMe = m.sender_id === (currentUser ? (currentUser.uid || currentUser.id) : null);
-    const msgDiv = document.createElement('div');
-    msgDiv.className = 'message ' + (isMe ? 'message-sent' : 'message-received');
-    msgDiv.innerHTML = `${escapeHtml(m.content)}<div class="message-time">${isMe ? 'You' : escapeHtml(m.sender_name || 'User')} • ${new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`;
-    if (m._failed) {
-      const failBadge = document.createElement('span');
-      failBadge.className = 'msg-fail';
-      failBadge.textContent = 'Failed';
-      msgDiv.appendChild(failBadge);
-    }
-    container.appendChild(msgDiv);
+    renderSingleMessage(m);
   });
   container.scrollTop = container.scrollHeight;
 }
 
-function getLocalMessages(convoId) {
-  try {
-    const raw = localStorage.getItem('chat_msgs_' + convoId);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) { return []; }
+function renderSingleMessage(m) {
+  const container = document.getElementById('messagesContainer');
+  const userId = currentUser ? (currentUser.uid || currentUser.id) : 'guest';
+  const isMe = m.sender_id === userId;
+  const isAI = m.sender_id === AI_ID;
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'message ' + (isMe ? 'message-sent' : (isAI ? 'message-received ai-msg' : 'message-received'));
+  msgDiv.innerHTML = `${escapeHtml(m.content)}<div class="message-time">${isMe ? 'You' : escapeHtml(m.sender_name || 'User')} &bull; ${new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
 }
 
-function saveLocalMessage(convoId, msg) {
-  const msgs = getLocalMessages(convoId);
-  msgs.push(msg);
-  localStorage.setItem('chat_msgs_' + convoId, JSON.stringify(msgs));
-}
-
+/* ---- SEND MESSAGE ---- */
 async function sendMessage() {
-  console.log('[CHAT] sendMessage called');
-  if (isSending) { console.log('[CHAT] Already sending, blocked'); return; }
+  if (isSending) return;
 
   const input = document.getElementById('msgInput');
   const btn = document.getElementById('sendBtn');
   const text = input.value.trim();
-  console.log('[CHAT] Text:', text, '| Active convo:', activeConversationId, '| User:', currentUser);
 
-  if (!text) { console.log('[CHAT] Empty text, blocked'); return; }
-  if (!activeConversationId) { showToast('Select a conversation first'); console.warn('[CHAT] No active conversation'); return; }
-  if (!currentUser) { showToast('Please login to send messages'); console.warn('[CHAT] No user'); return; }
+  if (!text) return;
+  if (!activeConversationId) { showToast('Select a conversation first'); return; }
 
   isSending = true;
   btn.disabled = true;
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  const userId = currentUser.uid || currentUser.id;
 
-  // Optimistically render
-  const container = document.getElementById('messagesContainer');
-  const emptyMsg = container.querySelector('.no-convos');
-  if (emptyMsg) emptyMsg.remove();
-
-  const msgDiv = document.createElement('div');
-  msgDiv.className = 'message message-sent';
-  msgDiv.innerHTML = `${escapeHtml(text)}<div class="message-time">You • ${timeStr}</div>`;
-  container.appendChild(msgDiv);
-  container.scrollTop = container.scrollHeight;
-  input.value = '';
-
-  const msgObj = {
-    conversation_id: activeConversationId,
-    sender_id: userId,
-    sender_name: currentUser.displayName || currentUser.email || 'User',
-    content: text,
-    created_at: now.toISOString()
-  };
-
-  // Try Supabase first
-  if (supabaseClient) {
-    try {
-      console.log('[CHAT] Inserting to Supabase...');
-      const { error: msgErr } = await supabaseClient.from('messages').insert(msgObj);
-      if (msgErr) {
-        console.error('[CHAT] Supabase insert error:', msgErr);
-        // Save locally as fallback
-        msgObj._failed = true;
-        saveLocalMessage(activeConversationId, msgObj);
-        showToast('Message saved locally (Supabase error: ' + (msgErr.message || msgErr.code) + ')');
-        msgDiv.style.opacity = '0.6';
-        const failBadge = document.createElement('span');
-        failBadge.className = 'msg-fail';
-        failBadge.textContent = 'Saved locally';
-        msgDiv.appendChild(failBadge);
-      } else {
-        console.log('[CHAT] Supabase insert OK');
-        // Also save locally for backup
-        saveLocalMessage(activeConversationId, msgObj);
-        // Update conversation preview
-        const { error: convErr } = await supabaseClient
-          .from('conversations')
-          .update({ last_message: text, updated_at: now.toISOString() })
-          .eq('id', activeConversationId);
-        if (convErr) console.warn('[CHAT] Update conversation error:', convErr);
-      }
-    } catch (e) {
-      console.error('[CHAT] Send exception:', e);
-      saveLocalMessage(activeConversationId, msgObj);
-      showToast('Network error — message saved locally');
-      msgDiv.style.opacity = '0.6';
-    }
-  } else {
-    // No Supabase at all — use localStorage only
-    console.log('[CHAT] No Supabase — saving to localStorage only');
-    saveLocalMessage(activeConversationId, msgObj);
+  const userId = currentUser ? (currentUser.uid || currentUser.id) : 'guest_' + localStorage.getItem('naijaswap_guest_id') || generateId();
+  if (!currentUser && !localStorage.getItem('naijaswap_guest_id')) {
+    localStorage.setItem('naijaswap_guest_id', userId);
   }
 
-  // Update sidebar preview
+  const msg = {
+    id: generateId(),
+    sender_id: userId,
+    sender_name: currentUser ? (currentUser.displayName || currentUser.email || 'User') : 'Guest',
+    content: text,
+    created_at: nowISO()
+  };
+
+  // Save
+  const msgs = getMessages(activeConversationId);
+  msgs.push(msg);
+  saveMessages(activeConversationId, msgs);
+
+  // Update sidebar
   const conv = conversations.find(c => c.id === activeConversationId);
-  if (conv) { conv.preview = text; conv.time = timeStr; renderConversationList(conversations); }
+  if (conv) {
+    conv.preview = text.substring(0, 40) + (text.length > 40 ? '...' : '');
+    conv.time = nowTime();
+    saveConversations(conversations);
+    renderConversationList();
+  }
+
+  // Render
+  renderSingleMessage(msg);
+  input.value = '';
+
+  // AI reply if this is AI convo
+  if (conv && conv.isAI) {
+    triggerAIReply(activeConversationId, text);
+  }
 
   isSending = false;
   btn.disabled = false;
+  input.focus();
 }
 
-function subscribeToMessages(convoId) {
-  if (!supabaseClient) return;
-  if (messagesSubscription) { messagesSubscription.unsubscribe(); messagesSubscription = null; }
-  messagesSubscription = supabaseClient
-    .channel('messages-' + convoId)
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'conversation_id=eq.' + convoId }, payload => {
-      const m = payload.new;
-      const isMe = m.sender_id === (currentUser.uid || currentUser.id);
-      if (isMe) return;
-      const container = document.getElementById('messagesContainer');
-      const emptyMsg = container.querySelector('.no-convos');
-      if (emptyMsg) emptyMsg.remove();
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'message message-received';
-      msgDiv.innerHTML = `${escapeHtml(m.content)}<div class="message-time">${escapeHtml(m.sender_name || 'User')} • ${new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`;
-      container.appendChild(msgDiv);
-      container.scrollTop = container.scrollHeight;
-    })
-    .subscribe();
-}
+/* ---- NEW CHAT ---- */
+function openNewChatModal() { document.getElementById('newChatModal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
-async function loadConversations() {
-  console.log('[CHAT] Loading conversations...');
-  if (!currentUser) {
-    console.log('[CHAT] No user — showing empty');
-    renderConversationList([]);
-    return;
-  }
-  const userId = currentUser.uid || currentUser.id;
-
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('conversations')
-        .select('*')
-        .or('participant_1.eq.' + userId + ',participant_2.eq.' + userId)
-        .order('updated_at', { ascending: false });
-      if (error) throw error;
-      conversations = (data || []).map((c, i) => ({
-        id: c.id,
-        name: c.title || 'Conversation ' + (i + 1),
-        avatar: (c.title || 'C').substring(0, 2).toUpperCase(),
-        preview: c.last_message || 'No messages yet',
-        time: c.updated_at ? new Date(c.updated_at).toLocaleDateString() : '',
-        unread: c.unread_count || 0,
-        deal_id: c.deal_id,
-        product: c.product,
-        value: c.value,
-        status: c.status,
-        payment: c.payment_terms
-      }));
-      console.log('[CHAT] Loaded', conversations.length, 'conversations from Supabase');
-      renderConversationList(conversations);
-      return;
-    } catch (e) {
-      console.warn('[CHAT] Supabase convos failed:', e.message);
-    }
-  }
-
-  // Fallback: load from localStorage keys
-  const localConvos = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && key.startsWith('chat_msgs_')) {
-      const convoId = key.replace('chat_msgs_', '');
-      const msgs = getLocalMessages(convoId);
-      if (msgs.length > 0) {
-        const last = msgs[msgs.length - 1];
-        localConvos.push({
-          id: convoId,
-          name: 'Chat ' + convoId.slice(0, 8),
-          avatar: 'CH',
-          preview: last.content.slice(0, 30),
-          time: new Date(last.created_at).toLocaleDateString(),
-          unread: 0
-        });
-      }
-    }
-  }
-  conversations = localConvos;
-  console.log('[CHAT] Loaded', conversations.length, 'conversations from localStorage');
-  renderConversationList(conversations);
-}
-
-async function startNewChat(e) {
+function startNewChat(e) {
   e.preventDefault();
   const name = document.getElementById('ncName').value.trim();
-  const otherId = document.getElementById('ncId').value.trim() || 'unknown_' + Date.now();
+  const otherId = document.getElementById('ncId').value.trim() || 'user_' + generateId();
   const product = document.getElementById('ncProduct').value.trim();
   if (!name) return;
-  if (!currentUser) { showToast('Please login first'); return; }
 
   closeModal('newChatModal');
-  const userId = currentUser.uid || currentUser.id;
-  const convoId = 'local_' + Date.now();
+  const convoId = generateId();
 
-  // Try Supabase
-  if (supabaseClient) {
-    try {
-      const { data: created, error } = await supabaseClient
-        .from('conversations')
-        .insert({
-          participant_1: userId,
-          participant_2: otherId,
-          title: name,
-          last_message: 'Start chatting...',
-          unread_count: 0,
-          product: product
-        })
-        .select()
-        .single();
-      if (!error && created) {
-        const conv = {
-          id: created.id, name: name, avatar: name.substring(0,2).toUpperCase(),
-          preview: 'Start chatting...', time: 'Now', unread: 0,
-          deal_id: '', product: product, value: '', status: '', payment: ''
-        };
-        conversations.unshift(conv);
-        renderConversationList(conversations);
-        selectConversation(created.id);
-        return;
-      }
-    } catch (e) { console.warn('[CHAT] Create convo failed:', e); }
-  }
-
-  // Fallback: localStorage-only conversation
   const conv = {
-    id: convoId, name: name, avatar: name.substring(0,2).toUpperCase(),
-    preview: 'Start chatting...', time: 'Now', unread: 0,
-    deal_id: '', product: product, value: '', status: '', payment: ''
+    id: convoId,
+    name: name,
+    avatar: name.substring(0, 2).toUpperCase(),
+    isAI: false,
+    preview: 'Start chatting...',
+    time: nowTime(),
+    unread: 0,
+    deal_id: '',
+    product: product || 'General',
+    value: '',
+    status: 'Active',
+    payment: ''
   };
+
   conversations.unshift(conv);
-  renderConversationList(conversations);
+  saveConversations(conversations);
+  renderConversationList();
   selectConversation(convoId);
-  showToast('Chat started (local mode)');
+  showToast('Chat started with ' + name);
+
+  // Clear form
+  document.getElementById('ncName').value = '';
+  document.getElementById('ncId').value = '';
+  document.getElementById('ncProduct').value = '';
 }
 
-async function handleUrlParams() {
+/* ---- URL PARAMS ---- */
+function handleUrlParams() {
   const params = new URLSearchParams(window.location.search);
   const convoId = params.get('convo');
   const name = params.get('name');
   const sellerId = params.get('seller');
   const product = params.get('product');
-  console.log('[CHAT] URL params:', {convoId, name, sellerId, product});
 
-  if (convoId && name && currentUser) {
-    const userId = currentUser.uid || currentUser.id;
-    const otherUserId = sellerId || 'unknown';
-
-    // Check if exists
-    let found = conversations.find(c => c.id === convoId);
-    if (!found && supabaseClient) {
-      try {
-        const { data: existing } = await supabaseClient
-          .from('conversations')
-          .select('*')
-          .or('and(participant_1.eq.' + userId + ',participant_2.eq.' + otherUserId + '),and(participant_1.eq.' + otherUserId + ',participant_2.eq.' + userId + ')')
-          .limit(1);
-        if (existing && existing.length > 0) {
-          const c = existing[0];
-          found = {
-            id: c.id, name: c.title || name, avatar: (c.title || name).substring(0,2).toUpperCase(),
-            preview: c.last_message || 'No messages yet', time: c.updated_at ? new Date(c.updated_at).toLocaleDateString() : 'Now', unread: c.unread_count || 0,
-            deal_id: c.deal_id, product: c.product || product, value: c.value, status: c.status, payment: c.payment_terms
-          };
-          conversations.unshift(found);
-          renderConversationList(conversations);
-        }
-      } catch (e) { console.warn(e); }
+  if (convoId && name) {
+    let conv = conversations.find(c => c.id === convoId);
+    if (!conv) {
+      conv = {
+        id: convoId,
+        name: decodeURIComponent(name),
+        avatar: decodeURIComponent(name).substring(0, 2).toUpperCase(),
+        isAI: false,
+        preview: 'Start chatting...',
+        time: nowTime(),
+        unread: 0,
+        deal_id: '',
+        product: product || '',
+        value: '',
+        status: 'Active',
+        payment: ''
+      };
+      conversations.unshift(conv);
+      saveConversations(conversations);
+      renderConversationList();
     }
-
-    if (!found) {
-      // Create new
-      if (supabaseClient) {
-        try {
-          const { data: created, error } = await supabaseClient
-            .from('conversations')
-            .insert({
-              participant_1: userId,
-              participant_2: otherUserId,
-              title: decodeURIComponent(name),
-              last_message: 'Start chatting...',
-              unread_count: 0,
-              product: product || ''
-            })
-            .select()
-            .single();
-          if (!error && created) {
-            found = {
-              id: created.id, name: decodeURIComponent(name), avatar: decodeURIComponent(name).substring(0,2).toUpperCase(),
-              preview: 'Start chatting...', time: 'Now', unread: 0,
-              deal_id: '', product: product || '', value: '', status: '', payment: ''
-            };
-            conversations.unshift(found);
-            renderConversationList(conversations);
-          }
-        } catch (e) { console.warn(e); }
-      }
-      if (!found) {
-        // Local fallback
-        found = {
-          id: convoId, name: decodeURIComponent(name), avatar: decodeURIComponent(name).substring(0,2).toUpperCase(),
-          preview: 'Start chatting...', time: 'Now', unread: 0,
-          deal_id: '', product: product || '', value: '', status: '', payment: ''
-        };
-        conversations.unshift(found);
-        renderConversationList(conversations);
-      }
-    }
-
-    if (found) selectConversation(found.id);
+    selectConversation(convoId);
   }
+}
+
+/* ---- INIT ---- */
+function initConversations() {
+  conversations = getConversations();
+
+  // Always ensure AI assistant exists
+  let aiConvo = conversations.find(c => c.id === 'ai_naijaswap');
+  if (!aiConvo) {
+    aiConvo = {
+      id: 'ai_naijaswap',
+      name: AI_NAME,
+      avatar: '&#129302;',
+      isAI: true,
+      preview: 'Hello! Welcome to NaijaSwap...',
+      time: nowTime(),
+      unread: 0,
+      deal_id: 'AI Support',
+      product: 'General',
+      value: 'Free',
+      status: 'Online',
+      payment: '24/7'
+    };
+    conversations.unshift(aiConvo);
+    saveConversations(conversations);
+
+    // Seed welcome message if none exists
+    const aiMsgs = getMessages('ai_naijaswap');
+    if (!aiMsgs.length) {
+      saveMessages('ai_naijaswap', [{
+        id: generateId(),
+        sender_id: AI_ID,
+        sender_name: AI_NAME,
+        content: "Hello! I'm the NaijaSwap AI Assistant. I can help you with buying, selling, export compliance, shipping, and payments. What would you like to know?",
+        created_at: nowISO()
+      }]);
+    }
+  }
+
+  renderConversationList();
 }
 
 function viewContract() {
@@ -827,13 +799,35 @@ function viewEscrow() {
   else showToast('Select a conversation first');
 }
 
+function setMode(mode) {
+  localStorage.setItem('naijaswap_mode', mode);
+  const switchEl = document.getElementById('modeSwitch');
+  if (mode === 'b2b') { switchEl.classList.add('b2b-active'); }
+  else { switchEl.classList.remove('b2b-active'); }
+}
+function initMode() {
+  const savedMode = localStorage.getItem('naijaswap_mode') || 'b2c';
+  setMode(savedMode);
+}
+
+function toggleMobileConvoList() {
+  document.getElementById('conversationList').classList.toggle('mobile-open');
+}
+
+// Enter to send
 document.getElementById('msgInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
 
+// Mobile detection
+if (window.innerWidth <= 900) {
+  document.getElementById('mobileConvoToggle').style.display = 'inline-block';
+}
+
 initAuth();
 initMode();
-loadConversations().then(() => handleUrlParams());
+initConversations();
+handleUrlParams();
 </script>
 </body>
 </html>
