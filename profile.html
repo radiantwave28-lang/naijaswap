@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaijaSwap Profile — Manage your account, listings, and settings.">
+<meta name="author" content="RadiantWaves Media Ltd">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.json">
+<title>Profile — NaijaSwap | RadiantWaves Media Ltd</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --success: #28a745; --danger: #dc3545; --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+  --trade-green: #1a5f2a; --trade-gold: #c9a227; --trade-accent: #e87400;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; line-height: 1.6;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(255,107,53,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(15,52,96,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.export-banner {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%);
+  color: white; padding: 14px 2rem; position: relative; overflow: hidden; z-index: 1;
+}
+.export-banner::before {
+  content: ''; position: absolute; top: -50%; right: -5%; width: 250px; height: 250px;
+  background: rgba(255,255,255,0.05); border-radius: 50%;
+}
+.export-banner-inner {
+  max-width: 1200px; margin: 0 auto; display: flex; align-items: center;
+  justify-content: space-between; gap: 20px; flex-wrap: wrap; position: relative; z-index: 1;
+}
+.export-banner-left { display: flex; align-items: center; gap: 14px; }
+.export-banner-icon {
+  width: 42px; height: 42px; background: rgba(255,255,255,0.2);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.export-banner-title { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.export-banner-subtitle { font-size: 0.85rem; opacity: 0.95; }
+.export-banner-highlight {
+  background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px;
+  font-weight: 700; font-size: 0.8rem; white-space: nowrap;
+}
+.export-banner-cta {
+  background: white; color: #15803d; padding: 6px 16px; border-radius: 8px;
+  font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: all 0.2s; white-space: nowrap;
+}
+.export-banner-cta:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem;
+  background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--primary); box-shadow: var(--shadow);
+}
+.logo a { font-size: 1.5rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.logo span { background: linear-gradient(90deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.mode-switch {
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(255,255,255,0.08); border-radius: 20px; padding: 3px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.mode-switch button {
+  padding: 6px 16px; border-radius: 16px; border: none; font-size: 0.75rem;
+  font-weight: 700; cursor: pointer; transition: var(--transition);
+}
+.mode-b2c { background: var(--primary); color: white; }
+.mode-b2b { background: transparent; color: rgba(255,255,255,0.55); }
+.mode-switch.b2b-active .mode-b2c { background: transparent; color: rgba(255,255,255,0.55); }
+.mode-switch.b2b-active .mode-b2b { background: var(--trade-gold); color: var(--dark); }
+.topbar nav { display: flex; gap: 0.3rem; }
+.topbar nav a {
+  color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500;
+  font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 8px; transition: var(--transition);
+}
+.topbar nav a:hover, .topbar nav a.active { color: var(--primary); background: rgba(255,107,53,0.1); }
+.header-actions { display: flex; align-items: center; gap: 0.8rem; }
+.header-actions button {
+  padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: var(--white); font-size: 0.9rem;
+  cursor: pointer; transition: var(--transition);
+}
+.header-actions button:hover { background: var(--primary); border-color: var(--primary); }
+#loginButton { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+.section { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; position: relative; z-index: 1; }
+.section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+.card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.card p { font-size: 0.85rem; color: var(--gray); line-height: 1.5; }
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid #e0e0e0; background: var(--white); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { background: #f8f9fa; text-align: left; padding: 10px 14px; font-size: 0.7rem; text-transform: uppercase; color: var(--gray); font-weight: 700; border-bottom: 1px solid #e0e0e0; }
+td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; }
+tr:hover td { background: rgba(26,95,42,0.03); }
+.badge {
+  font-size: 0.65rem; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.bdg-verified { background: #dcfce7; color: #166534; }
+.bdg-pending { background: #fef3c7; color: #92400e; }
+.bdg-danger { background: #fee2e2; color: #991b1b; }
+.bdg-gray { background: #e8e8e8; color: #555; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.7rem 1.4rem; border-radius: 8px; border: none;
+  font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition);
+  text-decoration: none; font-family: inherit;
+}
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+.btn-secondary { background: var(--white); color: var(--dark); border: 1px solid #e0e0e0; }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn-green { background: var(--trade-green); color: white; }
+.btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,95,42,0.4); }
+.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+.tabs { display: flex; gap: 0.3rem; border-bottom: 2px solid #e0e0e0; margin-bottom: 1.5rem; }
+.tab {
+  padding: 0.6rem 1.2rem; background: none; border: none; font-size: 0.85rem;
+  font-weight: 700; color: var(--gray); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white;
+  padding: 14px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 200;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+footer {
+  background: var(--dark); color: var(--white); padding: 3rem;
+  position: relative; z-index: 1; margin-top: 3rem;
+}
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+.footer-grid h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-grid a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.5rem; transition: var(--transition); }
+.footer-grid a:hover { color: var(--primary); padding-left: 5px; }
+.footer-grid p { color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+.copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.company-footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+.ai-assistant-panel {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+  width: 350px; background: var(--white); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden; display: none;
+  flex-direction: column; max-height: 500px;
+}
+.ai-assistant-panel.open { display: flex; }
+.ai-assistant-header {
+  padding: 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white); display: flex; align-items: center; justify-content: space-between;
+}
+.ai-assistant-header h4 { font-size: 0.95rem; }
+.ai-assistant-header button { background: none; border: none; color: var(--white); font-size: 1.2rem; cursor: pointer; }
+.ai-assistant-body { padding: 1rem; overflow-y: auto; flex: 1; }
+.ai-assistant-body p { font-size: 0.9rem; color: var(--gray); margin-bottom: 0.8rem; }
+.ai-assistant-links { display: flex; flex-direction: column; gap: 0.5rem; }
+.ai-assistant-links a {
+  display: block; padding: 0.6rem 0.8rem; background: var(--light); border-radius: 8px;
+  color: var(--dark); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+  transition: var(--transition);
+}
+.ai-assistant-links a:hover { background: var(--primary); color: var(--white); }
+.ai-assistant-toggle {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 998;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white); border: none; font-size: 1.5rem; cursor: pointer;
+  box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.ai-assistant-toggle:hover { transform: scale(1.1); }
+.hidden { display: none !important; }
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; padding: 0.8rem 1rem; }
+  .topbar nav { order: 3; width: 100%; justify-content: center; margin-top: 0.5rem; gap: 0.3rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .ai-assistant-panel { width: calc(100% - 2rem); right: 1rem; bottom: 5rem; }
+}
+.profile-hero {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--secondary) 100%);
+  color: white; padding: 3rem 2rem; position: relative; z-index: 1;
+}
+.profile-hero-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; }
+.profile-avatar {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 800; flex-shrink: 0; border: 4px solid rgba(255,255,255,0.2);
+}
+.profile-info h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.profile-info p { opacity: 0.85; font-size: 0.95rem; }
+.profile-grid { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
+.profile-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+.profile-nav {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+.profile-nav a {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0.9rem 1.2rem; color: var(--dark); text-decoration: none;
+  font-size: 0.9rem; font-weight: 500; transition: var(--transition);
+  border-bottom: 1px solid #f0f0f0;
+}
+.profile-nav a:hover, .profile-nav a.active { background: rgba(255,107,53,0.06); color: var(--primary); }
+.profile-nav a:last-child { border-bottom: none; }
+.profile-content { background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0; padding: 1.5rem; }
+.profile-content h2 { font-size: 1.2rem; margin-bottom: 1.2rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 0.7rem; border: 1px solid #e0e0e0; border-radius: 8px;
+  font-size: 0.9rem; font-family: inherit; outline: none; transition: var(--transition);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.listing-mini {
+  display: flex; gap: 1rem; padding: 1rem; border: 1px solid #e0e0e0;
+  border-radius: 10px; margin-bottom: 0.8rem; transition: var(--transition);
+}
+.listing-mini:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.listing-mini img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+.listing-mini h4 { font-size: 0.95rem; margin-bottom: 0.2rem; }
+.listing-mini p { font-size: 0.8rem; color: var(--gray); }
+.listing-mini .price { color: var(--primary); font-weight: 700; font-size: 0.95rem; }
+.stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-mini {
+  background: #f8f9fa; border-radius: 10px; padding: 1rem; text-align: center;
+}
+.stat-mini .num { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+.stat-mini .lbl { font-size: 0.75rem; color: var(--gray); }
+@media (max-width: 900px) {
+  .profile-hero-inner { flex-direction: column; text-align: center; }
+  .profile-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="index.html">&#128293; <span>NaijaSwap</span></a></div>
+  <div class="mode-switch" id="modeSwitch">
+    <button class="mode-b2c" onclick="setMode('b2c')">&#128722; Marketplace</button>
+    <button class="mode-b2b" onclick="setMode('b2b')">&#127758; Global Trade</button>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="listings.html">Listings</a>
+    <a href="sell.html">Sell</a>
+    <a href="trade.html">Trade Desk</a>
+    <a href="requests.html">Requests</a>
+    <a href="crm.html">CRM</a>
+    <a href="partners.html">Partners</a>
+    <a href="chat.html">Chat</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="admin-approvals.html" id="adminLink" style="display:none;color:#ff6b35;font-weight:700;">&#128737; Admin</a>
+  </nav>
+  <div class="header-actions">
+    <button id="loginButton">Login</button>
+    <button id="profileButton" style="display:none">Profile</button>
+  </div>
+</header>
+
+<!-- Export Payment Banner -->
+<div class="export-banner hidden" id="exportBanner">
+  <div class="export-banner-inner">
+    <div class="export-banner-left">
+      <div class="export-banner-icon">&#128220;</div>
+      <div>
+        <div class="export-banner-title">Nigerian Export Standard Payment Terms</div>
+        <div class="export-banner-subtitle">All B2B deals use B/L-based escrow &mdash; 70&ndash;80% on B/L verification, 20&ndash;30% on inspection</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span class="export-banner-highlight">70&ndash;80% against B/L copy</span>
+      <span style="opacity:0.7;font-size:0.85rem;">+</span>
+      <span class="export-banner-highlight">20&ndash;30% on arrival &amp; inspection</span>
+      <a href="terms.html" class="export-banner-cta">View Contract &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="authGate" style="text-align:center;padding-top:4rem;">
+  <div style="padding:3rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">&#128274;</div>
+    <h2>Please Log In</h2>
+    <p>View and manage your NaijaSwap profile.</p>
+    <a href="login.html" class="btn btn-primary" style="margin-top:1rem;">Log In</a>
+  </div>
+</section>
+
+<div class="profile-hero hidden" id="profileHero">
+  <div class="profile-hero-inner">
+    <div class="profile-avatar" id="profileAvatar">&#128100;</div>
+    <div class="profile-info">
+      <h1 id="profileName">User</h1>
+      <p id="profileEmail">user@example.com</p>
+      <p id="profileLocation" style="margin-top:0.3rem;font-size:0.85rem;opacity:0.7;">&#127758; Nigeria</p>
+    </div>
+  </div>
+</div>
+
+<div class="section hidden" id="profileApp">
+  <div class="profile-grid">
+    <aside class="profile-sidebar">
+      <div class="profile-nav">
+        <a href="#" class="active" onclick="showTab('overview', this)">&#128100; Overview</a>
+        <a href="#" onclick="showTab('listings', this)">&#128230; My Listings</a>
+        <a href="#" onclick="showTab('deals', this)">&#127758; My Export Deals</a>
+        <a href="#" onclick="showTab('settings', this)">&#9881;&#65039; Settings</a>
+        <a href="#" onclick="showTab('security', this)">&#128274; Security</a>
+        <a href="wallet.html">&#128176; Wallet</a>
+        <a href="chat.html">&#128172; Messages</a>
+      </div>
+    </aside>
+    <div class="profile-content">
+      <div id="tab-overview">
+        <h2>Account Overview</h2>
+        <div class="stats-mini">
+          <div class="stat-mini"><div class="num" id="statListings">0</div><div class="lbl">Listings</div></div>
+          <div class="stat-mini"><div class="num" id="statSales">0</div><div class="lbl">Sales</div></div>
+          <div class="stat-mini"><div class="num" id="statRating">5.0</div><div class="lbl">Rating</div></div>
+        </div>
+        <h3 style="font-size:1rem;margin-bottom:0.8rem;">About</h3>
+        <p id="profileBio" style="color:var(--gray);font-size:0.9rem;line-height:1.6;">No bio added yet.</p>
+        <h3 style="font-size:1rem;margin:1.5rem 0 0.8rem;">Member Since</h3>
+        <p id="profileJoined" style="color:var(--gray);font-size:0.9rem;">-</p>
+      </div>
+      <div id="tab-listings" class="hidden">
+        <h2>My Listings</h2>
+        <div id="myListings"><div style="text-align:center;padding:2rem;color:var(--gray);">Loading your listings...</div></div>
+        <div style="text-align:center;margin-top:1rem;">
+          <a href="sell.html" class="btn btn-primary">&#10133; Create New Listing</a>
+        </div>
+      </div>
+      <div id="tab-settings" class="hidden">
+        <h2>Profile Settings</h2>
+        <div class="form-row">
+          <div class="form-group"><label>Display Name</label><input type="text" id="editName" placeholder="Your name"></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="editPhone" placeholder="+234..."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" id="editCity" placeholder="e.g. Lagos"></div>
+          <div class="form-group"><label>Country</label><input type="text" id="editCountry" placeholder="e.g. Nigeria"></div>
+        </div>
+        <div class="form-group"><label>Bio</label><textarea id="editBio" placeholder="Tell buyers about yourself..."></textarea></div>
+        <button class="btn btn-primary" onclick="saveProfile()">&#128190; Save Changes</button>
+      </div>
+      <div id="tab-security" class="hidden">
+        <h2>Security</h2>
+        <div class="form-group"><label>Current Password</label><input type="password" id="currPass" placeholder="********"></div>
+        <div class="form-group"><label>New Password</label><input type="password" id="newPass" placeholder="********"></div>
+        <div class="form-group"><label>Confirm New Password</label><input type="password" id="confPass" placeholder="********"></div>
+        <button class="btn btn-primary" onclick="changePassword()">&#128274; Update Password</button>
+      </div>
+      <div id="tab-deals" class="hidden">
+        <h2>My Export Deals</h2>
+        <div class="info-box green" style="margin-bottom:1rem;">
+          <strong>B2B Export Payment Structure:</strong> All your export deals follow the Nigerian standard &mdash; 70&ndash;80% released against B/L copy, 20&ndash;30% on arrival &amp; inspection. No large advance payments required.
+        </div>
+        <div id="myDeals"><div style="text-align:center;padding:2rem;color:var(--gray);">Loading your deals...</div></div>
+        <div style="text-align:center;margin-top:1rem;">
+          <a href="sell.html" class="btn btn-green">&#10133; Post New Export Product</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="ai-assistant-toggle" id="aiToggle" title="AI Assistant">&#129302;</button>
+<div class="ai-assistant-panel" id="aiPanel">
+  <div class="ai-assistant-header"><h4>&#129302; NaijaSwap AI Assistant</h4><button id="aiClose">&times;</button></div>
+  <div class="ai-assistant-body">
+    <p>Hi! I'm here to help you navigate NaijaSwap.</p>
+    <div class="ai-assistant-links">
+      <a href="listings.html">&#128269; Browse Listings</a>
+      <a href="sell.html">&#128230; Sell an Item</a>
+      <a href="trade.html">&#127758; Trade Desk</a>
+      <a href="requests.html">&#128308; Post Buying Request</a>
+      <a href="wallet.html">&#128176; Check Wallet</a>
+      <a href="chat.html">&#128172; Open Chat</a>
+      <a href="wishlist.html">&#10084;&#65039; My Wishlist</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><h3>NaijaSwap</h3><p>A global marketplace + B2B trade desk connecting verified African suppliers with international buyers.</p><p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p></div>
+    <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div><h3>Contact</h3><p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p><p>Available Worldwide &#8226; 45+ Countries</p></div>
+  </div>
+  <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd &#8226; Payment Structure: 70&ndash;80% against B/L copy &#8226; 20&ndash;30% on arrival &amp; inspection</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://kysnaeklegcazdwfgxysy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5c25hZWtsZWdjYXpkd2ZneHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjI4MjksImV4cCI6MjA5OTA5ODgyOX0.SQiVyeqQs9lcwree7QRjLqW0Pmbrz2Tq_2MEtwvutsk';
+let currentUser = null;
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
+  return null;
+}
+
+function initAuth() {
+  currentUser = getCurrentUser();
+  const loginBtn = document.getElementById('loginButton');
+  const profileBtn = document.getElementById('profileButton');
+  if (currentUser) {
+    loginBtn.textContent = 'Logout';
+    loginBtn.onclick = () => { localStorage.removeItem('naijaswap_user'); window.location.reload(); };
+    profileBtn.style.display = 'inline-block';
+    profileBtn.textContent = (currentUser.displayName || currentUser.email || 'Profile').split(' ')[0];
+    profileBtn.onclick = () => window.location.href = 'profile.html';
+  } else {
+    loginBtn.textContent = 'Login';
+    loginBtn.onclick = () => window.location.href = 'login.html';
+    profileBtn.style.display = 'none';
+  }
+}
+
+async function checkAdmin() {
+  try {
+    const userData = localStorage.getItem('naijaswap_user');
+    if (!userData) return;
+    const user = JSON.parse(userData);
+    const userId = user.uid || user.id;
+    if (!userId) return;
+    const { data } = await supabaseClient.from('profiles').select('role').eq('id', userId).single();
+    if (data && data.role === 'admin') {
+      const adminLink = document.getElementById('adminLink');
+      if (adminLink) adminLink.style.display = 'inline-block';
+    }
+  } catch (e) { console.error('Admin check error:', e); }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function setMode(mode) {
+  localStorage.setItem('naijaswap_mode', mode);
+  const switchEl = document.getElementById('modeSwitch');
+  const banner = document.getElementById('exportBanner');
+  if (mode === 'b2b') {
+    switchEl.classList.add('b2b-active');
+    if (banner) banner.classList.remove('hidden');
+  } else {
+    switchEl.classList.remove('b2b-active');
+    if (banner) banner.classList.add('hidden');
+  }
+}
+
+function initMode() {
+  const savedMode = localStorage.getItem('naijaswap_mode') || 'b2c';
+  setMode(savedMode);
+}
+
+const aiPanel = document.getElementById('aiPanel');
+const aiToggle = document.getElementById('aiToggle');
+const aiClose = document.getElementById('aiClose');
+if (aiToggle) aiToggle.addEventListener('click', () => aiPanel.classList.toggle('open'));
+if (aiClose) aiClose.addEventListener('click', () => aiPanel.classList.toggle('open'));
+
+initAuth();
+checkAdmin();
+initMode();
+
+let profileData = null;
+
+function showTab(tabId, el) {
+  document.querySelectorAll('.profile-nav a').forEach(a => a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['overview','listings','settings','security','deals'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
+  document.getElementById('tab-' + tabId).classList.remove('hidden');
+  if (tabId === 'listings') loadMyListings();
+  if (tabId === 'deals') loadMyDeals();
+}
+
+async function loadMyDeals() {
+  const userId = currentUser.uid || currentUser.id;
+  const box = document.getElementById('myDeals');
+  try {
+    const { data: deals, error } = await supabaseClient
+      .from('trade_deals')
+      .select('*')
+      .or('buyer_id.eq.' + userId + ',seller_id.eq.' + userId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!deals || deals.length === 0) {
+      box.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray);">No export deals yet. <a href="sell.html" style="color:var(--trade-green);">Post your first export product</a>.</div>';
+      return;
+    }
+    box.innerHTML = deals.map(d => {
+      const isSeller = d.seller_id === userId;
+      const otherParty = isSeller ? (d.buyer_name || 'Buyer') : (d.seller_name || 'Seller');
+      const blPercent = d.bl_percent || 75;
+      const inspectPercent = 100 - blPercent;
+      return `<div class="listing-mini" style="border-left:4px solid var(--trade-green);">
+        <div style="flex:1;">
+          <h4>${escapeHtml(d.product_name || 'Export Deal')}</h4>
+          <p>Deal ${d.deal_id || 'NS-0000'} &#8226; ${escapeHtml(otherParty)}</p>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem;font-size:0.8rem;">
+            <span style="color:var(--trade-green);font-weight:700;">${blPercent}% B/L + ${inspectPercent}% Inspection</span>
+            <span style="color:var(--gray);">${d.status || 'Pending'}</span>
+            <span style="color:var(--primary);font-weight:700;">${d.currency || '$'}${(parseFloat(d.total_value)||0).toLocaleString()}</span>
+          </div>
+        </div>
+        <a href="chat.html?convo=${d.conversation_id || ''}" class="btn btn-sm btn-secondary">Chat</a>
+      </div>`;
+    }).join('');
+  } catch (e) { box.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray);">Error loading deals.</div>'; }
+}
+
+async function loadProfile() {
+  if (!currentUser) {
+    document.getElementById('authGate').classList.remove('hidden');
+    document.getElementById('profileHero').classList.add('hidden');
+    document.getElementById('profileApp').classList.add('hidden');
+    return;
+  }
+  document.getElementById('authGate').classList.add('hidden');
+  document.getElementById('profileHero').classList.remove('hidden');
+  document.getElementById('profileApp').classList.remove('hidden');
+  const userId = currentUser.uid || currentUser.id;
+  try {
+    const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
+    if (error && error.code !== 'PGRST116') throw error;
+    profileData = data || {};
+    const name = profileData.display_name || currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileEmail').textContent = currentUser.email || 'No email';
+    document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('profileLocation').textContent = (profileData.city || 'Nigeria') + (profileData.country ? ', ' + profileData.country : '');
+    document.getElementById('profileBio').textContent = profileData.bio || 'No bio added yet.';
+    document.getElementById('profileJoined').textContent = profileData.created_at ? new Date(profileData.created_at).toLocaleDateString('en-NG', { month: 'long', year: 'numeric' }) : '-';
+    document.getElementById('editName').value = profileData.display_name || '';
+    document.getElementById('editPhone').value = profileData.phone || '';
+    document.getElementById('editCity').value = profileData.city || '';
+    document.getElementById('editCountry').value = profileData.country || '';
+    document.getElementById('editBio').value = profileData.bio || '';
+    loadStats(userId);
+  } catch (e) { console.error('Profile load error:', e); }
+}
+
+async function loadStats(userId) {
+  try {
+    const { data: listings } = await supabaseClient.from('listings').select('id').eq('seller_id', userId);
+    document.getElementById('statListings').textContent = listings ? listings.length : 0;
+  } catch (e) {}
+}
+
+async function loadMyListings() {
+  const userId = currentUser.uid || currentUser.id;
+  const box = document.getElementById('myListings');
+  try {
+    const { data: items, error } = await supabaseClient
+      .from('listings')
+      .select('*')
+      .eq('seller_id', userId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!items || items.length === 0) {
+      box.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray);">You have no listings yet. <a href="sell.html" style="color:var(--primary);">Create one now</a>.</div>';
+      return;
+    }
+    box.innerHTML = items.map(item => {
+      const img = item.cover_image || 'https://via.placeholder.com/80?text=No+Image';
+      return `<div class="listing-mini">
+        <img src="${img}" alt="" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
+        <div style="flex:1;">
+          <h4>${escapeHtml(item.title)}</h4>
+          <p>${escapeHtml(item.category || 'Item')} &#8226; ${item.status || 'pending'}</p>
+          <div class="price">${item.currency || '&#8358;'}${(parseFloat(item.price)||0).toLocaleString()}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;">
+          <a href="sell.html?edit=${item.id}" class="btn btn-sm btn-secondary">Edit</a>
+          <button class="btn btn-sm" style="background:#fee2e2;color:#991b1b;border:none;" onclick="deleteListing('${item.id}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (e) { box.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray);">Error loading listings.</div>'; }
+}
+
+async function saveProfile() {
+  const userId = currentUser.uid || currentUser.id;
+  const updates = {
+    display_name: document.getElementById('editName').value.trim(),
+    phone: document.getElementById('editPhone').value.trim(),
+    city: document.getElementById('editCity').value.trim(),
+    country: document.getElementById('editCountry').value.trim(),
+    bio: document.getElementById('editBio').value.trim(),
+    updated_at: new Date().toISOString()
+  };
+  try {
+    const { error } = await supabaseClient.from('profiles').upsert({ id: userId, ...updates });
+    if (error) throw error;
+    showToast('Profile updated successfully');
+    loadProfile();
+  } catch (e) { showToast('Failed to update profile'); console.error(e); }
+}
+
+async function deleteListing(id) {
+  if (!confirm('Are you sure you want to delete this listing?')) return;
+  try {
+    const { error } = await supabaseClient.from('listings').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Listing deleted');
+    loadMyListings();
+  } catch (e) { showToast('Failed to delete listing'); }
+}
+
+function changePassword() {
+  const curr = document.getElementById('currPass').value;
+  const neu = document.getElementById('newPass').value;
+  const conf = document.getElementById('confPass').value;
+  if (!curr || !neu) { showToast('Please fill all fields'); return; }
+  if (neu !== conf) { showToast('Passwords do not match'); return; }
+  showToast('Password update feature coming soon');
+}
+
+loadProfile();
+</script>
+</body>
+</html>

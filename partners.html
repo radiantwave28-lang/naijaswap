@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaijaSwap Strategic Partners — Verified institutional and corporate partnerships for global trade.">
+<meta name="author" content="RadiantWaves Media Ltd">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.json">
+<title>Partners — NaijaSwap | RadiantWaves Media Ltd</title>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+  --trade-green: #1a5f2a; --trade-gold: #c9a227; --trade-accent: #e87400;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; line-height: 1.6;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(255,107,53,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(15,52,96,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem;
+  background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--primary); box-shadow: var(--shadow);
+}
+.logo a { font-size: 1.5rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.logo span { background: linear-gradient(90deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.topbar nav { display: flex; gap: 0.3rem; }
+.topbar nav a {
+  color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500;
+  font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 8px; transition: var(--transition);
+}
+.topbar nav a:hover, .topbar nav a.active { color: var(--primary); background: rgba(255,107,53,0.1); }
+.header-actions { display: flex; align-items: center; gap: 0.8rem; }
+.header-actions button {
+  padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: var(--white); font-size: 0.9rem;
+  cursor: pointer; transition: var(--transition);
+}
+.header-actions button:hover { background: var(--primary); border-color: var(--primary); }
+#loginButton { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+.hero-partners {
+  background: linear-gradient(135deg, var(--secondary), var(--dark));
+  color: white; padding: 4rem 2rem; text-align: center; position: relative; z-index: 1;
+}
+.hero-partners h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 0.8rem; }
+.hero-partners p { font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+
+.section { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; position: relative; z-index: 1; }
+.section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.8rem; transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+.card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--trade-green); }
+.card p { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+.card .meta { display: flex; gap: 6px; margin-top: 0.8rem; flex-wrap: wrap; }
+.badge {
+  font-size: 0.65rem; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.bdg-institutional { background: #dbeafe; color: #1e40af; }
+.bdg-network { background: #dcfce7; color: #166534; }
+.bdg-highvalue { background: #fef3c7; color: #92400e; }
+.bdg-logistics { background: rgba(255,107,53,0.12); color: var(--primary-dark); }
+.bdg-finance { background: #e0e7ff; color: #3730a3; }
+.bdg-cert { background: #f3e8ff; color: #7c3aed; }
+.card .contact { margin-top: 0.8rem; font-size: 0.8rem; color: var(--gray); }
+.card .contact a { color: var(--trade-green); text-decoration: none; font-weight: 600; }
+
+.partner-category {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; margin-bottom: 1.5rem;
+}
+.partner-category h3 {
+  font-size: 1rem; font-weight: 700; color: var(--secondary);
+  margin-bottom: 1rem; padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary);
+}
+.partner-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.partner-item {
+  background: #f8f9fa; border-radius: 8px; padding: 1rem;
+  border-left: 3px solid var(--primary);
+}
+.partner-item h4 { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.3rem; }
+.partner-item p { font-size: 0.8rem; color: var(--gray); line-height: 1.5; }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white;
+  padding: 14px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 200;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+footer {
+  background: var(--dark); color: var(--white); padding: 3rem;
+  position: relative; z-index: 1; margin-top: 3rem;
+}
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+.footer-grid h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-grid a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.5rem; transition: var(--transition); }
+.footer-grid a:hover { color: var(--primary); padding-left: 5px; }
+.footer-grid p { color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+.copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.company-footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; padding: 0.8rem 1rem; }
+  .topbar nav { order: 3; width: 100%; justify-content: center; margin-top: 0.5rem; }
+  .hero-partners h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="index.html">NaijaSwap</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="listings.html">Listings</a>
+    <a href="sell.html">Sell</a>
+    <a href="trade.html">Trade Desk</a>
+    <a href="requests.html">Requests</a>
+    <a href="crm.html">CRM</a>
+    <a href="partners.html" class="active">Partners</a>
+    <a href="chat.html">Chat</a>
+    <a href="wallet.html">Wallet</a>
+  </nav>
+  <div class="header-actions">
+    <button id="loginButton">Login</button>
+    <button id="profileButton" style="display:none">Profile</button>
+  </div>
+</header>
+
+<section class="hero-partners">
+  <h1>Strategic Partnerships</h1>
+  <p>Verified institutional and corporate collaborations accelerating trade between Nigeria and the world.</p>
+</section>
+
+<section class="section">
+  <!-- GOVERNMENT & INSTITUTIONAL -->
+  <div class="partner-category">
+    <h3>Government & Institutional Partners</h3>
+    <div class="partner-list">
+      <div class="partner-item">
+        <h4>Nigerian Export Promotion Council (NEPC)</h4>
+        <p>Official exporter verification, trade enquiries, and buyer-seller matchmaking. Provides the RC number and NEPC certificate validation used in NaijaSwap's verification process.</p>
+        <div class="meta"><span class="badge bdg-institutional">Institutional</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Standards Organisation of Nigeria (SON)</h4>
+        <p>Product quality certification and standards compliance for export goods. Mandatory for certain product categories entering EU markets.</p>
+        <div class="meta"><span class="badge bdg-cert">Certification</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Nigeria Customs Service (NCS)</h4>
+        <p>Export clearance, documentation verification, and customs bond facilitation for B2B shipments.</p>
+        <div class="meta"><span class="badge bdg-institutional">Institutional</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Nigerian Ports Authority (NPA)</h4>
+        <p>Port operations coordination, vessel scheduling, and cargo handling at Apapa, Tincan, Onne, and Calabar ports.</p>
+        <div class="meta"><span class="badge bdg-institutional">Institutional</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>EU-Nigeria Agribusiness Platform (EUNAP)</h4>
+        <p>Connects Nigerian agricultural businesses with verified European buyers, investors, and facilitators. Key partnership for agri-export division.</p>
+        <div class="meta"><span class="badge bdg-network">Network</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Enterprise Europe Network</h4>
+        <p>European Commission network actively seeking African agricultural partnerships. French and Belgian companies looking for cashew, cocoa, sesame, shea, and soybean suppliers.</p>
+        <div class="meta"><span class="badge bdg-highvalue">High Value</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGISTICS & SHIPPING -->
+  <div class="partner-category">
+    <h3>Logistics & Shipping Partners</h3>
+    <div class="partner-list">
+      <div class="partner-item">
+        <h4>Grimaldi Lines</h4>
+        <p>RoRo and container freight from West Africa to European ports. Existing relationship for charcoal and bulk commodity shipments. Primary partner for European routes.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Maersk Line</h4>
+        <p>Global container shipping with weekly sailings from Lagos (Apapa/Tincan) to Rotterdam, Hamburg, and Felixstowe. Full container load (FCL) and less than container load (LCL) services.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>MSC (Mediterranean Shipping Company)</h4>
+        <p>Second-largest container carrier worldwide. Direct service from Lagos to Mediterranean and Northern European ports. Competitive rates for 20ft and 40ft containers.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>CMA CGM</h4>
+        <p>French container shipping line with strong West Africa presence. Offers reefer containers for temperature-sensitive agricultural exports.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>DHL Global Forwarding</h4>
+        <p>Air freight and express logistics for high-value, time-sensitive shipments. Door-to-door service with customs brokerage.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>GIG Logistics</h4>
+        <p>Nationwide domestic pickup and last-mile delivery. Handles cargo collection from supplier warehouses to port of loading.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Peace Mass Transit (PMT) Cargo</h4>
+        <p>Inter-state cargo services across Nigeria. Cost-effective option for moving goods from inland states to coastal ports.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>ABC Transport</h4>
+        <p>Inter-state parcel and cargo delivery. Reliable partner for moving export goods from northern and eastern Nigeria to Lagos ports.</p>
+        <div class="meta"><span class="badge bdg-logistics">Logistics</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINANCE & PAYMENT -->
+  <div class="partner-category">
+    <h3>Finance & Payment Partners</h3>
+    <div class="partner-list">
+      <div class="partner-item">
+        <h4>Guaranty Trust Bank (GTBank)</h4>
+        <p>Escrow account provider for NaijaSwap local and international transactions. Domiciliary accounts in USD, EUR, and GBP. Trade finance and LC processing.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Zenith Bank</h4>
+        <p>International trade finance, export documentation, and foreign exchange services. Preferred bank for B2B wire transfers.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Access Bank</h4>
+        <p>Trade finance solutions including Letters of Credit, bank guarantees, and export credit facilities.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Flutterwave</h4>
+        <p>Payment gateway integration for local card payments, bank transfers, and mobile money. Handles NGN transactions securely.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Paystack</h4>
+        <p>Local payment processing for Nigerian buyers. Supports card, bank transfer, and USSD payments with instant confirmation.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Afreximbank</h4>
+        <p>Pan-African export-import bank providing trade finance, export credit insurance, and intra-African payment settlement.</p>
+        <div class="meta"><span class="badge bdg-finance">Finance</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSPECTION & CERTIFICATION -->
+  <div class="partner-category">
+    <h3>Inspection & Certification Partners</h3>
+    <div class="partner-list">
+      <div class="partner-item">
+        <h4>SGS Nigeria</h4>
+        <p>Pre-shipment inspection, quality testing, and certification for agricultural and mineral exports. Recognized by EU customs authorities.</p>
+        <div class="meta"><span class="badge bdg-cert">Certification</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Bureau Veritas</h4>
+        <p>Independent inspection, testing, and certification services. Provides quality assurance reports for B2B buyers.</p>
+        <div class="meta"><span class="badge bdg-cert">Certification</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Intertek</h4>
+        <p>Product testing and certification for consumer goods, chemicals, and food products. CPSIA and REACH compliance testing.</p>
+        <div class="meta"><span class="badge bdg-cert">Certification</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Cotecna Inspection</h4>
+        <p>Pre-shipment verification of conformity (PVoC) for exports to regulated markets. Mandatory for certain destination countries.</p>
+        <div class="meta"><span class="badge bdg-cert">Certification</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSURANCE -->
+  <div class="partner-category">
+    <h3>Insurance Partners</h3>
+    <div class="partner-list">
+      <div class="partner-item">
+        <h4>Nigerian Export-Import Bank (NEXIM)</h4>
+        <p>Export credit insurance, political risk coverage, and trade finance for Nigerian exporters. Protects against buyer default and currency fluctuation.</p>
+        <div class="meta"><span class="badge bdg-finance">Insurance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>Leadway Assurance</h4>
+        <p>Marine cargo insurance, transit insurance, and goods-in-transit coverage for local and international shipments.</p>
+        <div class="meta"><span class="badge bdg-finance">Insurance</span></div>
+      </div>
+      <div class="partner-item">
+        <h4>AIICO Insurance</h4>
+        <p>Comprehensive cargo insurance policies covering loss, damage, and theft during ocean, air, and road transit.</p>
+        <div class="meta"><span class="badge bdg-finance">Insurance</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY -->
+  <div class="section-title" style="margin-top:2rem;">Partnership Strategy</div>
+  <div style="background:var(--white);border-radius:var(--radius);border:1px solid #e0e0e0;padding:2rem;">
+    <p style="font-size:1rem;color:var(--gray);line-height:1.7;margin-bottom:1rem;">
+      NaijaSwap's buyer acquisition uses a multi-channel partnership approach:
+    </p>
+    <ul style="color:var(--gray);line-height:1.8;padding-left:1.5rem;">
+      <li><strong>Direct outreach</strong> — qualified European importers and distributors</li>
+      <li><strong>Trade databases</strong> — verified buyer lists with A/B/C priority classification</li>
+      <li><strong>NEPC</strong> — official Nigerian export promotion and matchmaking</li>
+      <li><strong>EUNAP</strong> — EU-Nigeria agribusiness platform access</li>
+      <li><strong>Enterprise Europe Network</strong> — European companies actively seeking African partners</li>
+      <li><strong>Shipping lines</strong> — Maersk, MSC, CMA CGM, Grimaldi for logistics partnerships</li>
+      <li><strong>Inspection bodies</strong> — SGS, Bureau Veritas, Intertek for quality assurance</li>
+      <li><strong>Trade fairs</strong> — physical presence at Gulfood, SIAL Paris, Anuga Cologne</li>
+      <li><strong>LinkedIn</strong> — professional network outreach to procurement managers</li>
+      <li><strong>Referrals</strong> — leveraging existing B/L track record and relationships</li>
+      <li><strong>Historical buyers</strong> — reactivating previous European customers</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><h3>NaijaSwap</h3><p>A global marketplace + B2B trade desk connecting verified African suppliers with international buyers.</p><p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p></div>
+    <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div><h3>Contact</h3><p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p><p>Available Worldwide - 45+ Countries</p></div>
+  </div>
+  <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd - Registered Company - Secure Escrow Payments - Verified Sellers - Global Shipping - B2B Export Desk</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
+  return null;
+}
+function initAuth() {
+  const currentUser = getCurrentUser();
+  const loginBtn = document.getElementById('loginButton');
+  const profileBtn = document.getElementById('profileButton');
+  if (currentUser) {
+    loginBtn.textContent = 'Logout';
+    loginBtn.onclick = () => { localStorage.removeItem('naijaswap_user'); window.location.reload(); };
+    profileBtn.style.display = 'inline-block';
+    profileBtn.textContent = (currentUser.displayName || currentUser.email || 'Profile').split(' ')[0];
+    profileBtn.onclick = () => window.location.href = 'profile.html';
+  } else {
+    loginBtn.textContent = 'Login';
+    loginBtn.onclick = () => window.location.href = 'login.html';
+    profileBtn.style.display = 'none';
+  }
+}
+initAuth();
+</script>
+</body>
+</html>

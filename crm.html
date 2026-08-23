@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaijaSwap Global Trade CRM - Manage buyers, suppliers, RFQs, follow-ups and export opportunities.">
+<meta name="theme-color" content="#1a1a2e">
+<title>NaijaSwap Global Trade CRM</title>
+<style>
+:root{--primary:#ff6b35;--primary-dark:#e55a2b;--primary-light:#ff8f66;--green:#1a5f2a;--green-light:#2e7d32;--gold:#c9a227;--dark:#111827;--dark2:#1a1a2e;--white:#ffffff;--light:#f5f7fa;--border:#e5e7eb;--gray:#6b7280;--success:#16a34a;--warning:#d97706;--danger:#dc2626;--blue:#2563eb;--purple:#7c3aed;--shadow:0 5px 25px rgba(0,0,0,.10);--radius:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f6f8;color:var(--dark);min-height:100vh;}
+button,input,select,textarea{font-family:inherit;}
+button{cursor:pointer;}
+.topbar{height:70px;background:var(--dark2);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 25px;position:sticky;top:0;z-index:1000;box-shadow:0 3px 15px rgba(0,0,0,.2);}
+.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:white;}
+.logo-mark{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;flex-shrink:0;font-size:18px;}
+.logo .brand{color:white;display:flex;align-items:center;gap:4px;}
+.logo .brand span{color:var(--primary);}
+.logo .crm-tag{font-size:11px;color:#aaa;font-weight:600;letter-spacing:0.5px;background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:4px;}
+.logo-mark{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--gold));display:flex;align-items:center;justify-content:center;color:white;font-weight:900;}
+.logo span{color:var(--primary);}
+.top-actions{display:flex;gap:10px;align-items:center;}
+.top-actions button{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:white;padding:9px 14px;border-radius:8px;}
+.top-actions button:hover{background:var(--primary);}
+.layout{display:flex;min-height:calc(100vh - 70px);}
+.sidebar{width:245px;background:white;border-right:1px solid var(--border);padding:20px 12px;position:sticky;top:70px;height:calc(100vh - 70px);}
+.sidebar-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);font-weight:800;padding:10px 13px;}
+.nav-btn{width:100%;border:0;background:none;padding:12px 14px;border-radius:9px;text-align:left;color:#374151;font-weight:600;margin-bottom:4px;}
+.nav-btn:hover{background:#fff3ee;color:var(--primary);}
+.nav-btn.active{background:var(--primary);color:white;}
+.main{flex:1;padding:25px;min-width:0;}
+.page-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px;}
+.page-header h1{font-size:26px;}
+.page-header p{color:var(--gray);font-size:14px;margin-top:3px;}
+.header-buttons{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{border:0;border-radius:8px;padding:10px 15px;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:var(--primary);color:white;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-green{background:var(--green);color:white;}
+.btn-blue{background:var(--blue);color:white;}
+.btn-danger{background:var(--danger);color:white;}
+.btn-light{background:white;border:1px solid var(--border);color:#374151;}
+.btn-light:hover{border-color:var(--primary);color:var(--primary);}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:22px;}
+.stat{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.03);}
+.stat-title{color:var(--gray);font-size:12px;font-weight:700;text-transform:uppercase;}
+.stat-value{font-size:30px;font-weight:900;margin-top:7px;}
+.stat-small{font-size:12px;color:var(--gray);margin-top:5px;}
+.orange{color:var(--primary);}
+.green{color:var(--green);}
+.blue{color:var(--blue);}
+.gold{color:var(--gold);}
+.red{color:var(--danger);}
+.card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.03);}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;}
+.card-header h2{font-size:17px;}
+.filters{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.input,select,textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 11px;background:white;outline:none;font-size:13px;}
+.input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,107,53,.1);}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+table{width:100%;border-collapse:collapse;min-width:1150px;}
+th{background:#f8fafc;color:#6b7280;text-align:left;padding:11px;font-size:11px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);}
+td{padding:12px 11px;border-bottom:1px solid #edf0f2;font-size:13px;vertical-align:middle;}
+tr:hover td{background:#fffaf7;}
+.company{font-weight:800;}
+.country{color:var(--gray);}
+.email{color:var(--blue);text-decoration:none;}
+.email:hover{text-decoration:underline;}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;}
+.badge-new{background:#dbeafe;color:#1d4ed8;}
+.badge-contacted{background:#e0e7ff;color:#4338ca;}
+.badge-qualified{background:#dcfce7;color:#166534;}
+.badge-quoted{background:#fef3c7;color:#92400e;}
+.badge-negotiating{background:#ede9fe;color:#6d28d9;}
+.badge-won{background:#bbf7d0;color:#166534;}
+.badge-lost{background:#fee2e2;color:#991b1b;}
+.badge-followup{background:#ffedd5;color:#9a3412;}
+.badge-verified{background:#dcfce7;color:#166534;}
+.badge-research{background:#f3f4f6;color:#4b5563;}
+.priority-A{color:#b91c1c;font-weight:900;}
+.priority-B{color:#b45309;font-weight:900;}
+.priority-C{color:#2563eb;font-weight:900;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal{width:min(850px,100%);max-height:90vh;overflow-y:auto;background:white;border-radius:15px;padding:25px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.close{border:0;background:#f3f4f6;width:34px;height:34px;border-radius:50%;font-size:18px;}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.form-group{margin-bottom:4px;}
+.form-group.full{grid-column:1/-1;}
+.form-group label{display:block;font-size:12px;font-weight:800;margin-bottom:5px;color:#374151;}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
+.pipeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
+.pipeline-box{padding:15px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);}
+.pipeline-number{font-size:24px;font-weight:900;}
+.pipeline-label{color:var(--gray);font-size:12px;}
+.reminder{display:flex;justify-content:space-between;gap:15px;padding:13px;border:1px solid var(--border);border-radius:9px;margin-bottom:8px;}
+.reminder strong{display:block;}
+.reminder small{color:var(--gray);}
+.overdue{border-left:4px solid var(--danger);}
+.today{border-left:4px solid var(--warning);}
+.empty{padding:40px;text-align:center;color:var(--gray);}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--dark2);color:white;padding:13px 18px;border-radius:9px;box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:.3s;z-index:3000;font-size:13px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.contract-banner{background:linear-gradient(135deg,var(--green),#2d8a3e);color:white;border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;}
+.contract-banner h3{font-size:1.1rem;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;}
+.contract-banner ul{list-style:none;padding:0;margin:0;}
+.contract-banner ul li{padding:0.4rem 0;padding-left:1.5rem;position:relative;font-size:0.9rem;line-height:1.5;}
+.contract-banner ul li::before{content:"✓";position:absolute;left:0;color:#a3e6b0;font-weight:700;}
+.contract-banner .highlight{background:rgba(255,255,255,0.15);padding:0.8rem 1rem;border-radius:8px;margin-top:0.8rem;font-size:0.85rem;line-height:1.6;}
+.contract-banner .highlight strong{color:#ffd700;}
+.milestone-box{background:#f8f9fa;border-radius:8px;padding:1rem;border:1px solid #e0e0e0;margin-bottom:1rem;}
+.milestone-item{display:flex;align-items:flex-start;gap:1rem;padding:0.8rem 0;border-bottom:1px solid #e8e8e8;}
+.milestone-item:last-child{border-bottom:none;}
+.milestone-number{min-width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:0.8rem;}
+.milestone-content{flex:1;}
+.milestone-content b{display:block;font-size:0.9rem;margin-bottom:0.2rem;}
+.milestone-content span{font-size:0.8rem;color:var(--gray);}
+.milestone-percent{font-size:1rem;font-weight:700;color:var(--green);}
+@media(max-width:900px){
+.sidebar{display:none;}
+.main{padding:15px;}
+.topbar{padding:0 12px;}
+.logo{font-size:18px;}
+.top-actions{display:none;}
+.page-header{flex-direction:column;align-items:flex-start;}
+.filters{grid-template-columns:1fr;}
+.form-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ADMIN AUTH GATE -->
+<div id="authOverlay" style="position:fixed;inset:0;background:#1a1a2e;z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:white;padding:35px;border-radius:15px;text-align:center;max-width:360px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#ff6b35,#c9a227);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:22px;margin:0 auto 15px;">N</div>
+    <h2 style="margin-bottom:8px;font-size:20px;color:#111827;">NaijaSwap CRM</h2>
+    <p style="color:#6b7280;font-size:13px;margin-bottom:20px;">Restricted access. Enter password to continue.</p>
+    <input type="password" id="crmPassword" placeholder="Password" style="width:100%;padding:12px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:12px;font-size:14px;outline:none;">
+    <button onclick="checkCRMAuth()" style="width:100%;padding:12px;background:#ff6b35;color:white;border:0;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px;">Unlock</button>
+    <p id="authError" style="color:#dc2626;font-size:12px;margin-top:10px;display:none;">Incorrect password</p>
+  </div>
+</div>
+<script>
+(function(){
+  if(sessionStorage.getItem('crm_auth')==='ok'){
+    const el=document.getElementById('authOverlay');
+    if(el) el.style.display='none';
+  }
+})();
+function checkCRMAuth(){
+  const pw=document.getElementById('crmPassword').value;
+  if(pw==='naijaswap2026'){
+    sessionStorage.setItem('crm_auth','ok');
+    document.getElementById('authOverlay').style.display='none';
+  }else{
+    document.getElementById('authError').style.display='block';
+    document.getElementById('crmPassword').value='';
+  }
+}
+document.getElementById('crmPassword').addEventListener('keypress',function(e){
+  if(e.key==='Enter') checkCRMAuth();
+});
+</script>
+<!-- END ADMIN AUTH GATE -->
+
+
+<header class="topbar">
+    <div class="logo">
+        <div class="logo-mark">N</div>
+        <div class="brand">Naija<span>Swap</span><span class="crm-tag">CRM</span></div>
+    </div>
+    <div class="top-actions">
+        <button onclick="goMarketplace()">🌍 Marketplace</button>
+        <button onclick="exportCSV()">⬇ Export</button>
+        <button onclick="document.getElementById('fileInput').click()">⬆ Import</button>
+        <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="importCSV(event)">
+    </div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+    <div class="sidebar-title">CRM</div>
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">📊 Dashboard</button>
+    <button class="nav-btn" onclick="showPage('contacts',this)">👥 Contacts</button>
+    <button class="nav-btn" onclick="showPage('rfq',this)">📩 Buying Requests</button>
+    <button class="nav-btn" onclick="showPage('followups',this)">🔔 Follow-ups</button>
+    <button class="nav-btn" onclick="showPage('deals',this)">💰 Deals / Orders</button>
+    <div class="sidebar-title" style="margin-top:25px;">Tools</div>
+    <button class="nav-btn" onclick="openContactModal()">➕ Add Contact</button>
+    <button class="nav-btn" onclick="resetDemoData()">🔄 Reset CRM</button>
+</aside>
+
+<main class="main">
+
+<section id="dashboardPage">
+    <div class="page-header">
+        <div>
+            <h1>Global Trade CRM</h1>
+            <p>Manage European buyers, suppliers, export leads and follow-ups.</p>
+        </div>
+        <div class="header-buttons">
+            <button class="btn btn-primary" onclick="openContactModal()">+ New Prospect</button>
+            <button class="btn btn-green" onclick="exportCSV()">Export CRM</button>
+        </div>
+    </div>
+    <div class="stats">
+        <div class="stat"><div class="stat-title">Total Prospects</div><div class="stat-value orange" id="totalContacts">0</div><div class="stat-small">Buyers & trade prospects</div></div>
+        <div class="stat"><div class="stat-title">Priority A</div><div class="stat-value red" id="priorityA">0</div><div class="stat-small">Highest-value prospects</div></div>
+        <div class="stat"><div class="stat-title">Contacted</div><div class="stat-value blue" id="contacted">0</div><div class="stat-small">Outreach already started</div></div>
+        <div class="stat"><div class="stat-title">Qualified</div><div class="stat-value green" id="qualified">0</div><div class="stat-small">Potential buyers</div></div>
+        <div class="stat"><div class="stat-title">Quoted</div><div class="stat-value gold" id="quoted">0</div><div class="stat-small">Commercial offer sent</div></div>
+        <div class="stat"><div class="stat-title">Pipeline Value</div><div class="stat-value green" id="pipelineValue">€0</div><div class="stat-small">Estimated opportunities</div></div>
+    </div>
+    <div class="card">
+        <div class="card-header"><h2>Sales Pipeline</h2></div>
+        <div class="pipeline">
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeNew">0</div><div class="pipeline-label">New</div></div>
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeContacted">0</div><div class="pipeline-label">Contacted</div></div>
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeQualified">0</div><div class="pipeline-label">Qualified</div></div>
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeQuoted">0</div><div class="pipeline-label">Quoted</div></div>
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeNegotiating">0</div><div class="pipeline-label">Negotiating</div></div>
+            <div class="pipeline-box"><div class="pipeline-number" id="pipeWon">0</div><div class="pipeline-label">Won</div></div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>🔔 Upcoming Follow-ups</h2>
+            <button class="btn btn-light" onclick="showPage('followups',document.querySelectorAll('.nav-btn')[3])">View All</button>
+        </div>
+        <div id="dashboardFollowups"></div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2>⭐ Priority Prospects</h2>
+            <button class="btn btn-light" onclick="showPage('contacts',document.querySelectorAll('.nav-btn')[1])">View Contacts</button>
+        </div>
+        <div class="table-wrap" id="dashboardTopProspects"></div>
+    </div>
+</section>
+
+<section id="contactsPage" style="display:none">
+    <div class="page-header">
+        <div><h1>Contacts & Prospects</h1><p>Your international buyer database.</p></div>
+        <div class="header-buttons">
+            <button class="btn btn-primary" onclick="openContactModal()">+ Add Contact</button>
+            <button class="btn btn-green" onclick="exportCSV()">Export CSV</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="filters">
+            <input id="searchContacts" class="input" placeholder="Search company, person, email, product..." oninput="renderContacts()">
+            <select id="filterCountry" onchange="renderContacts()"><option value="">All Countries</option></select>
+            <select id="filterStatus" onchange="renderContacts()"><option value="">All Statuses</option><option value="New">New</option><option value="Contacted">Contacted</option><option value="Qualified">Qualified</option><option value="Quoted">Quoted</option><option value="Negotiating">Negotiating</option><option value="Won">Won</option><option value="Lost">Lost</option></select>
+            <select id="filterPriority" onchange="renderContacts()"><option value="">All Priorities</option><option value="A">Priority A</option><option value="B">Priority B</option><option value="C">Priority C</option></select>
+            <select id="filterProduct" onchange="renderContacts()"><option value="">All Products</option><option value="Hardwood Charcoal">Hardwood Charcoal</option><option value="BBQ Charcoal">BBQ Charcoal</option><option value="Restaurant Charcoal">Restaurant Charcoal</option><option value="Briquettes">Briquettes</option><option value="Cashew Nuts">Cashew Nuts</option><option value="Cocoa Beans">Cocoa Beans</option><option value="Sesame Seeds">Sesame Seeds</option><option value="Ginger">Ginger</option><option value="Hibiscus">Hibiscus</option><option value="Shea Butter">Shea Butter</option><option value="Soybean">Soybean</option><option value="Palm Oil">Palm Oil</option><option value="Agricultural Products">Agricultural Products</option></select>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Company</th><th>Country</th><th>Contact</th><th>Product</th><th>Priority</th><th>Status</th><th>Potential</th><th>Verification</th><th>Next Follow-up</th><th>Actions</th></tr></thead>
+                <tbody id="contactsTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section id="rfqPage" style="display:none">
+    <div class="page-header">
+        <div><h1>Buying Requests / RFQs</h1><p>Track incoming requests from international buyers.</p></div>
+        <button class="btn btn-primary" onclick="openRFQModal()">+ Add RFQ</button>
+    </div>
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>RFQ</th><th>Buyer</th><th>Product</th><th>Quantity</th><th>Destination</th><th>Status</th><th>Deadline</th><th>Action</th></tr></thead>
+                <tbody id="rfqTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section id="followupsPage" style="display:none">
+    <div class="page-header">
+        <div><h1>Follow-up Manager</h1><p>Never lose track of an international buyer.</p></div>
+    </div>
+    <div class="card"><div id="followupList"></div></div>
+</section>
+
+<section id="dealsPage" style="display:none">
+    <div class="page-header">
+        <div><h1>Deals & Orders</h1><p>Track quotations, negotiations and completed sales.</p></div>
+        <button class="btn btn-primary" onclick="openDealModal()">+ Add Deal</button>
+    </div>
+    <div class="contract-banner">
+        <h3>📋 Standard Nigerian Export Payment Terms</h3>
+        <ul>
+            <li><strong>70–80% paid against B/L Copy</strong> — The bulk of payment is released only when the seller provides a copy of the Bill of Lading (proof of shipment). No large advance payment required.</li>
+            <li><strong>20–30% final payment on arrival & inspection</strong> — The balance is held in escrow and released only after goods arrive at destination and the buyer confirms quality and quantity through inspection.</li>
+            <li>These terms are stated in the sales contract from day one and apply to all B2B export transactions on NaijaSwap.</li>
+        </ul>
+        <div class="highlight">
+            <strong>Why this matters:</strong> This is the industry-standard payment structure for Nigerian commodity exports. It protects both buyer and seller — the seller ships with confidence knowing payment is secured against B/L, while the buyer retains a holdback to ensure goods match specifications on arrival. NaijaSwap escrow enforces these terms automatically.
+        </div>
+    </div>
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Deal</th><th>Buyer</th><th>Product</th><th>Quantity</th><th>Incoterm</th><th>Value</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+                <tbody id="dealTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<div class="modal-overlay" id="contactModal">
+    <div class="modal">
+        <div class="modal-header"><h2 id="contactModalTitle">Add Prospect</h2><button class="close" onclick="closeModal('contactModal')">×</button></div>
+        <form id="contactForm" onsubmit="saveContact(event)">
+            <input type="hidden" id="contactId">
+            <div class="form-grid">
+                <div class="form-group"><label>Company *</label><input class="input" id="company" required></div>
+                <div class="form-group"><label>Contact Person</label><input class="input" id="contactPerson"></div>
+                <div class="form-group"><label>Country *</label><input class="input" id="country" required></div>
+                <div class="form-group"><label>City</label><input class="input" id="city"></div>
+                <div class="form-group"><label>Email</label><input type="email" class="input" id="email"></div>
+                <div class="form-group"><label>Phone / WhatsApp</label><input class="input" id="phone"></div>
+                <div class="form-group"><label>Website</label><input class="input" id="website"></div>
+                <div class="form-group">
+                    <label>Product Interest</label>
+                    <select id="product"><option>Hardwood Charcoal</option><option>BBQ Charcoal</option><option>Restaurant Charcoal</option><option>Briquettes</option><option>Cashew Nuts</option><option>Cocoa Beans</option><option>Sesame Seeds</option><option>Ginger</option><option>Hibiscus</option><option>Shea Butter</option><option>Soybean</option><option>Palm Oil</option><option>Agricultural Products</option></select>
+                </div>
+                <div class="form-group"><label>Priority</label><select id="priority"><option value="A">A - High</option><option value="B">B - Medium</option><option value="C">C - Low</option></select></div>
+                <div class="form-group"><label>Status</label><select id="status"><option>New</option><option>Contacted</option><option>Qualified</option><option>Quoted</option><option>Negotiating</option><option>Won</option><option>Lost</option></select></div>
+                <div class="form-group"><label>Estimated Potential (€)</label><input type="number" class="input" id="potential" value="0"></div>
+                <div class="form-group"><label>Next Follow-up</label><input type="date" class="input" id="followup"></div>
+                <div class="form-group"><label>Verification</label><select id="verification"><option value="Verified">Verified</option><option value="Research">Research Required</option></select></div>
+                <div class="form-group full"><label>Notes</label><textarea id="notes" placeholder="Buyer requirements, previous supplier, certification needs, container volume, payment terms preference, etc."></textarea></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-light" onclick="closeModal('contactModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Prospect</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="rfqModal">
+    <div class="modal">
+        <div class="modal-header"><h2>New Buying Request</h2><button class="close" onclick="closeModal('rfqModal')">×</button></div>
+        <form onsubmit="saveRFQ(event)">
+            <div class="form-grid">
+                <div class="form-group"><label>Buyer</label><input class="input" id="rfqBuyer" required></div>
+                <div class="form-group"><label>Product</label><input class="input" id="rfqProduct" value="Hardwood Charcoal"></div>
+                <div class="form-group"><label>Quantity</label><input class="input" id="rfqQuantity" placeholder="e.g. 2 x 40ft containers"></div>
+                <div class="form-group"><label>Destination</label><input class="input" id="rfqDestination"></div>
+                <div class="form-group"><label>Status</label><select id="rfqStatus"><option>New</option><option>Contacted</option><option>Quoted</option><option>Negotiating</option><option>Won</option><option>Lost</option></select></div>
+                <div class="form-group"><label>Deadline</label><input type="date" class="input" id="rfqDeadline"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-light" onclick="closeModal('rfqModal')">Cancel</button>
+                <button class="btn btn-primary">Save RFQ</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="dealModal">
+    <div class="modal">
+        <div class="modal-header"><h2>New Deal</h2><button class="close" onclick="closeModal('dealModal')">×</button></div>
+        <form onsubmit="saveDeal(event)">
+            <div class="form-grid">
+                <div class="form-group"><label>Buyer</label><input class="input" id="dealBuyer" required></div>
+                <div class="form-group"><label>Product</label><input class="input" id="dealProduct" value="Hardwood Charcoal"></div>
+                <div class="form-group"><label>Quantity</label><input class="input" id="dealQuantity"></div>
+                <div class="form-group"><label>Deal Value (€)</label><input type="number" class="input" id="dealValue" required></div>
+                <div class="form-group"><label>Incoterm</label><select id="dealIncoterm"><option>FOB</option><option>CIF</option><option>CFR</option><option>DDP</option><option>EXW</option></select></div>
+                <div class="form-group"><label>Status</label><select id="dealStatus"><option>Quoted</option><option>Negotiating</option><option>Won</option><option>Lost</option></select></div>
+            </div>
+            <div class="form-group full">
+                <label>Payment Terms (Nigerian Export Standard)</label>
+                <div class="milestone-box">
+                    <div class="milestone-item">
+                        <div class="milestone-number">1</div>
+                        <div class="milestone-content"><b>Against B/L Copy</b><span>70–80% released upon presentation of Bill of Lading copy</span></div>
+                        <div class="milestone-percent">70–80%</div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-number">2</div>
+                        <div class="milestone-content"><b>Arrival & Inspection</b><span>20–30% released after goods arrive and buyer confirms inspection</span></div>
+                        <div class="milestone-percent">20–30%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group full"><label>Deal Notes</label><textarea id="dealNotes" placeholder="Special terms, shipping line, inspection requirements, etc."></textarea></div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-light" onclick="closeModal('dealModal')">Cancel</button>
+                <button class="btn btn-primary">Save Deal</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+const STORAGE_KEY = 'naijaswap_crm_data';
+let contacts = [], rfqs = [], deals = [], followups = [];
+
+function loadData() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+        const data = JSON.parse(raw);
+        contacts = data.contacts || [];
+        rfqs = data.rfqs || [];
+        deals = data.deals || [];
+        followups = data.followups || [];
+    } else {
+        resetDemoData();
+    }
+}
+
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ contacts, rfqs, deals, followups }));
+}
+
+function resetDemoData() {
+    contacts = JSON.parse(JSON.stringify(baseProspects));
+    rfqs = [
+        {id:1,buyer:"Charcoal Trade International",product:"BBQ Charcoal",quantity:"5 x 40ft containers",destination:"Hamburg, Germany",status:"Quoted",deadline:"2026-09-15"},
+        {id:2,buyer:"Carré Distribution",product:"Hardwood Charcoal",quantity:"3 x 40ft containers",destination:"Bordeaux, France",status:"Negotiating",deadline:"2026-10-01"},
+        {id:3,buyer:"Digital Q B.V.",product:"Briquettes",quantity:"2 x 20ft containers",destination:"Rotterdam, Netherlands",status:"New",deadline:"2026-09-30"}
+    ];
+    deals = [
+        {id:1,buyer:"Charcoal Trade International",product:"BBQ Charcoal",quantity:"5 x 40ft",incoterm:"FOB",value:150000,status:"Negotiating",date:"2026-08-15",notes:"Payment: 80% against B/L, 20% on arrival"},
+        {id:2,buyer:"Weissmeer Baltische",product:"Restaurant Charcoal",quantity:"3 x 40ft",incoterm:"CIF",value:250000,status:"Quoted",date:"2026-08-10",notes:"Payment: 75% against B/L, 25% on inspection"}
+    ];
+    followups = [];
+    saveData();
+    updateAll();
+    showToast('CRM reset with demo data');
+}
+
+const baseProspects = [
+{id:1,company:"Charcoal Trade International",person:"Oliver Peiseler",country:"Germany",city:"Leichlingen",email:"charcoaltrade@online.de",phone:"+49 151 70624055",website:"https://www.charcoaltrade.de",product:"BBQ Charcoal",priority:"A",status:"New",potential:150000,followup:"",verification:"Verified",notes:"Direct importer. Supplies wholesalers, BBQ manufacturers, restaurants and retailers. Strong prospect for certified African charcoal."},
+{id:2,company:"Weissmeer Baltische Import-Export GmbH",person:"Malte Buchholz",country:"Germany",city:"Hamburg",email:"",phone:"+49 40 30967520",website:"https://weissmeer-handel.de",product:"Restaurant Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Verified",notes:"Trade contact for Kings of Barbecue restaurant charcoal. Large-format charcoal for professional users."},
+{id:3,company:"DHG Vertriebs- & Consultinggesellschaft mbH",person:"",country:"Germany",city:"Wachtendonk",email:"info@dhg-vertrieb.de",phone:"+49 2152 91460",website:"https://www.dhg-vertrieb.com",product:"BBQ Charcoal",priority:"A",status:"New",potential:300000,followup:"",verification:"Verified",notes:"Large charcoal/briquette business. Investigate procurement department and African sourcing requirements."},
+{id:4,company:"Carré Distribution",person:"",country:"France",city:"Saint-Loubès",email:"",phone:"+33 7 43 64 81 82",website:"https://carredistribution.com",product:"BBQ Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Verified",notes:"French direct importer and distributor of professional charcoal. Currently sources Brazil/Paraguay."},
+{id:5,company:"Cubax",person:"",country:"France",city:"Île-de-France",email:"",phone:"+33 9 84 05 22 90",website:"https://www.cubax-france.fr",product:"Restaurant Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Verified",notes:"Charcoal distributor serving France. Contact to assess import requirements."},
+{id:6,company:"Somagic",person:"",country:"France",city:"La Genète",email:"contact@somagic.fr",phone:"+33 3 85 32 27 50",website:"https://www.somagic.fr",product:"BBQ Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Verified",notes:"French barbecue manufacturer and major charcoal BBQ brand. Potential strategic buyer/distributor relationship."},
+{id:7,company:"Jovi Belgium",person:"",country:"Belgium",city:"",email:"jovibelgium@skynet.be",phone:"",website:"https://www.jovibelgium.be",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Verified",notes:"Belgian charcoal-related business. Verify current purchasing requirements before sending quotation."},
+{id:8,company:"Digital Q B.V.",person:"",country:"Netherlands",city:"Kaatsheuvel",email:"info@digital-q.nl",phone:"+31 416 235412",website:"https://big4space.com",product:"BBQ Charcoal",priority:"B",status:"New",potential:80000,followup:"",verification:"Verified",notes:"Wholesale distributor of BBQ products and charcoal variants in Benelux."},
+{id:9,company:"BBQ en Gourmet",person:"",country:"Netherlands",city:"",email:"info@bbqengourmet.nl",phone:"+31 85 7430362",website:"https://bbqengourmet.nl",product:"BBQ Charcoal",priority:"C",status:"New",potential:50000,followup:"",verification:"Verified",notes:"BBQ business serving Netherlands, Belgium and German border area. Contact to investigate wholesale partnership."},
+{id:10,company:"Belgian Charcoal Importer 01",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"Belgium wooden-charcoal buyer prospect. Verify company identity."},
+{id:11,company:"Belgian Charcoal Importer 02",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:12,company:"Belgian Charcoal Importer 03",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:13,company:"Belgian Charcoal Importer 04",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:14,company:"Belgian Charcoal Importer 05",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Belgium professional charcoal buyer prospect."},
+{id:15,company:"Belgian Charcoal Importer 06",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:16,company:"Belgian Charcoal Importer 07",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:17,company:"Belgian Charcoal Importer 08",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Belgium charcoal/briquette buyer prospect."},
+{id:18,company:"Belgian Charcoal Importer 09",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:19,company:"Belgian Charcoal Importer 10",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Belgium charcoal buyer prospect."},
+{id:20,company:"German Charcoal Importer 01",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:300000,followup:"",verification:"Research",notes:"German wood/charcoal importer prospect."},
+{id:21,company:"German Charcoal Importer 02",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:300000,followup:"",verification:"Research",notes:"German charcoal buyer prospect."},
+{id:22,company:"German Charcoal Importer 03",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"German BBQ charcoal buyer prospect."},
+{id:23,company:"German Charcoal Importer 04",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"German professional charcoal buyer prospect."},
+{id:24,company:"German Charcoal Importer 05",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:200000,followup:"",verification:"Research",notes:"German charcoal buyer prospect."},
+{id:25,company:"German Charcoal Importer 06",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:180000,followup:"",verification:"Research",notes:"German charcoal buyer prospect."},
+{id:26,company:"German Charcoal Importer 07",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"German briquette buyer prospect."},
+{id:27,company:"German Charcoal Importer 08",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"German charcoal buyer prospect."},
+{id:28,company:"German Charcoal Importer 09",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"German restaurant charcoal buyer prospect."},
+{id:29,company:"German Charcoal Importer 10",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"German charcoal buyer prospect."},
+{id:30,company:"Dutch Charcoal Importer 01",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:300000,followup:"",verification:"Research",notes:"Netherlands is one of the leading EU import markets for wood charcoal."},
+{id:31,company:"Dutch Charcoal Importer 02",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"Dutch charcoal buyer prospect."},
+{id:32,company:"Dutch Charcoal Importer 03",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"Dutch BBQ charcoal buyer prospect."},
+{id:33,company:"Dutch Charcoal Importer 04",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:180000,followup:"",verification:"Research",notes:"Dutch professional charcoal buyer."},
+{id:34,company:"Dutch Charcoal Importer 05",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Dutch briquette buyer prospect."},
+{id:35,company:"Dutch Charcoal Importer 06",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Dutch charcoal buyer."},
+{id:36,company:"Dutch Charcoal Importer 07",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Dutch charcoal buyer."},
+{id:37,company:"Dutch Charcoal Importer 08",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Dutch charcoal buyer."},
+{id:38,company:"Dutch Charcoal Importer 09",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"C",status:"New",potential:80000,followup:"",verification:"Research",notes:"Dutch restaurant charcoal prospect."},
+{id:39,company:"Dutch Charcoal Importer 10",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:70000,followup:"",verification:"Research",notes:"Dutch BBQ charcoal prospect."},
+{id:40,company:"French Charcoal Importer 01",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"France has substantial charcoal import activity."},
+{id:41,company:"French Charcoal Importer 02",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"French BBQ charcoal buyer prospect."},
+{id:42,company:"French Charcoal Importer 03",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"French professional charcoal buyer."},
+{id:43,company:"French Charcoal Importer 04",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"French charcoal buyer."},
+{id:44,company:"French Charcoal Importer 05",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"French charcoal buyer."},
+{id:45,company:"French Charcoal Importer 06",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"French briquette buyer."},
+{id:46,company:"French Charcoal Importer 07",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"French charcoal prospect."},
+{id:47,company:"French Charcoal Importer 08",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"French restaurant charcoal buyer."},
+{id:48,company:"French Charcoal Importer 09",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:80000,followup:"",verification:"Research",notes:"French charcoal prospect."},
+{id:49,company:"French Charcoal Importer 10",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"C",status:"New",potential:70000,followup:"",verification:"Research",notes:"French charcoal prospect."},
+{id:50,company:"Italian Charcoal Importer 01",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:220000,followup:"",verification:"Research",notes:"Italian charcoal buyer prospect."},
+{id:51,company:"Italian Charcoal Importer 02",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:180000,followup:"",verification:"Research",notes:"Italian BBQ charcoal prospect."},
+{id:52,company:"Italian Charcoal Importer 03",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Italian professional charcoal buyer."},
+{id:53,company:"Italian Charcoal Importer 04",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Italian charcoal prospect."},
+{id:54,company:"Italian Charcoal Importer 05",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Italian charcoal prospect."},
+{id:55,company:"Spanish Charcoal Importer 01",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"Spanish charcoal importer prospect."},
+{id:56,company:"Spanish Charcoal Importer 02",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:180000,followup:"",verification:"Research",notes:"Spanish BBQ charcoal buyer."},
+{id:57,company:"Spanish Charcoal Importer 03",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Spanish restaurant charcoal buyer."},
+{id:58,company:"Spanish Charcoal Importer 04",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Spanish charcoal buyer."},
+{id:59,company:"Spanish Charcoal Importer 05",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:80000,followup:"",verification:"Research",notes:"Spanish charcoal prospect."},
+{id:60,company:"Polish Charcoal Importer 01",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:220000,followup:"",verification:"Research",notes:"Poland is a significant European wood-charcoal import market."},
+{id:61,company:"Polish Charcoal Importer 02",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:180000,followup:"",verification:"Research",notes:"Polish BBQ charcoal buyer."},
+{id:62,company:"Polish Charcoal Importer 03",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Polish professional charcoal buyer."},
+{id:63,company:"Polish Charcoal Importer 04",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Polish charcoal prospect."},
+{id:64,company:"Polish Charcoal Importer 05",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Polish briquette prospect."},
+{id:65,company:"Austrian Charcoal Importer 01",person:"",country:"Austria",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Austrian charcoal buyer."},
+{id:66,company:"Austrian Charcoal Importer 02",person:"",country:"Austria",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Austrian BBQ charcoal prospect."},
+{id:67,company:"Austrian Charcoal Importer 03",person:"",country:"Austria",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"C",status:"New",potential:90000,followup:"",verification:"Research",notes:"Austrian restaurant charcoal prospect."},
+{id:68,company:"Portuguese Charcoal Importer 01",person:"",country:"Portugal",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Portuguese charcoal prospect."},
+{id:69,company:"Portuguese Charcoal Importer 02",person:"",country:"Portugal",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Portuguese BBQ charcoal prospect."},
+{id:70,company:"UK Charcoal Importer 01",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"UK charcoal importer/wholesaler prospect."},
+{id:71,company:"UK Charcoal Importer 02",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"UK BBQ charcoal prospect."},
+{id:72,company:"UK Charcoal Importer 03",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Restaurant Charcoal",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"UK restaurant charcoal buyer."},
+{id:73,company:"UK Charcoal Importer 04",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"UK charcoal prospect."},
+{id:74,company:"UK Charcoal Importer 05",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Briquettes",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"UK briquette buyer."},
+{id:75,company:"Swiss Charcoal Importer 01",person:"",country:"Switzerland",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Swiss charcoal buyer prospect."},
+{id:76,company:"Swiss Charcoal Importer 02",person:"",country:"Switzerland",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Swiss BBQ charcoal prospect."},
+{id:77,company:"Swedish Charcoal Importer 01",person:"",country:"Sweden",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Swedish charcoal buyer."},
+{id:78,company:"Danish Charcoal Importer 01",person:"",country:"Denmark",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Danish charcoal buyer."},
+{id:79,company:"Norwegian Charcoal Importer 01",person:"",country:"Norway",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Norwegian charcoal buyer."},
+{id:80,company:"Finnish Charcoal Importer 01",person:"",country:"Finland",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:70000,followup:"",verification:"Research",notes:"Finnish charcoal prospect."},
+{id:81,company:"Irish Charcoal Importer 01",person:"",country:"Ireland",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:90000,followup:"",verification:"Research",notes:"Irish charcoal buyer."},
+{id:82,company:"Czech Charcoal Importer 01",person:"",country:"Czech Republic",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Czech charcoal buyer."},
+{id:83,company:"Czech Charcoal Importer 02",person:"",country:"Czech Republic",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:80000,followup:"",verification:"Research",notes:"Czech charcoal prospect."},
+{id:84,company:"Romanian Charcoal Importer 01",person:"",country:"Romania",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"Romanian charcoal buyer."},
+{id:85,company:"Luxembourg Charcoal Importer 01",person:"",country:"Luxembourg",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"C",status:"New",potential:60000,followup:"",verification:"Research",notes:"Luxembourg charcoal prospect."},
+{id:86,company:"Benelux Charcoal Distributor 01",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Hardwood Charcoal",priority:"A",status:"New",potential:180000,followup:"",verification:"Research",notes:"Benelux charcoal distributor prospect."},
+{id:87,company:"Benelux Charcoal Distributor 02",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:140000,followup:"",verification:"Research",notes:"Benelux charcoal distributor prospect."},
+{id:88,company:"German Agri Buyer 01",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Cashew Nuts",priority:"A",status:"New",potential:350000,followup:"",verification:"Research",notes:"German cashew nut importer/processor prospect."},
+{id:89,company:"German Agri Buyer 02",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:400000,followup:"",verification:"Research",notes:"German cocoa bean importer/chocolate manufacturer prospect."},
+{id:90,company:"German Agri Buyer 03",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Sesame Seeds",priority:"B",status:"New",potential:180000,followup:"",verification:"Research",notes:"German sesame seed importer for bakery/oil industry."},
+{id:91,company:"Dutch Agri Buyer 01",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:380000,followup:"",verification:"Research",notes:"Dutch cocoa bean importer — Amsterdam is major cocoa port."},
+{id:92,company:"Dutch Agri Buyer 02",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Cashew Nuts",priority:"A",status:"New",potential:280000,followup:"",verification:"Research",notes:"Dutch cashew nut importer/processor prospect."},
+{id:93,company:"Dutch Agri Buyer 03",person:"",country:"Netherlands",city:"",email:"",phone:"",website:"",product:"Ginger",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Dutch spice/ginger importer for food industry."},
+{id:94,company:"French Agri Buyer 01",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:350000,followup:"",verification:"Research",notes:"French cocoa bean importer/chocolate manufacturer prospect."},
+{id:95,company:"French Agri Buyer 02",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Shea Butter",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"French shea butter importer for cosmetics industry."},
+{id:96,company:"French Agri Buyer 03",person:"",country:"France",city:"",email:"",phone:"",website:"",product:"Hibiscus",priority:"B",status:"New",potential:100000,followup:"",verification:"Research",notes:"French hibiscus (zobo) importer for tea/beverage industry."},
+{id:97,company:"Italian Agri Buyer 01",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"Sesame Seeds",priority:"A",status:"New",potential:200000,followup:"",verification:"Research",notes:"Italian sesame seed importer for confectionery industry."},
+{id:98,company:"Italian Agri Buyer 02",person:"",country:"Italy",city:"",email:"",phone:"",website:"",product:"Soybean",priority:"B",status:"New",potential:180000,followup:"",verification:"Research",notes:"Italian soybean importer for food/oil industry."},
+{id:99,company:"Spanish Agri Buyer 01",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"Palm Oil",priority:"A",status:"New",potential:300000,followup:"",verification:"Research",notes:"Spanish palm oil importer for food industry."},
+{id:100,company:"Spanish Agri Buyer 02",person:"",country:"Spain",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"Spanish cocoa bean importer prospect."},
+{id:101,company:"Belgian Agri Buyer 01",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:320000,followup:"",verification:"Research",notes:"Belgian cocoa bean importer/chocolate industry. Antwerp is major port."},
+{id:102,company:"Belgian Agri Buyer 02",person:"",country:"Belgium",city:"",email:"",phone:"",website:"",product:"Cashew Nuts",priority:"A",status:"New",potential:220000,followup:"",verification:"Research",notes:"Belgian cashew nut importer/processor prospect."},
+{id:103,company:"UK Agri Buyer 01",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:300000,followup:"",verification:"Research",notes:"UK cocoa bean importer/chocolate manufacturer prospect."},
+{id:104,company:"UK Agri Buyer 02",person:"",country:"United Kingdom",city:"",email:"",phone:"",website:"",product:"Ginger",priority:"B",status:"New",potential:130000,followup:"",verification:"Research",notes:"UK ginger importer for food/beverage industry."},
+{id:105,company:"Polish Agri Buyer 01",person:"",country:"Poland",city:"",email:"",phone:"",website:"",product:"Soybean",priority:"B",status:"New",potential:160000,followup:"",verification:"Research",notes:"Polish soybean importer for animal feed/food industry."},
+{id:106,company:"Swiss Agri Buyer 01",person:"",country:"Switzerland",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"A",status:"New",potential:280000,followup:"",verification:"Research",notes:"Swiss cocoa bean importer/chocolate manufacturer prospect."},
+{id:107,company:"Swiss Agri Buyer 02",person:"",country:"Switzerland",city:"",email:"",phone:"",website:"",product:"Shea Butter",priority:"B",status:"New",potential:140000,followup:"",verification:"Research",notes:"Swiss shea butter importer for cosmetics/pharma industry."},
+{id:108,company:"Turkish Agri Buyer 01",person:"",country:"Turkey",city:"",email:"",phone:"",website:"",product:"Cashew Nuts",priority:"A",status:"New",potential:250000,followup:"",verification:"Research",notes:"Turkish cashew nut importer/processor — growing market."},
+{id:109,company:"Turkish Agri Buyer 02",person:"",country:"Turkey",city:"",email:"",phone:"",website:"",product:"Sesame Seeds",priority:"B",status:"New",potential:150000,followup:"",verification:"Research",notes:"Turkish sesame seed importer for tahini production."},
+{id:110,company:"Greek Charcoal Importer 01",person:"",country:"Greece",city:"",email:"",phone:"",website:"",product:"BBQ Charcoal",priority:"B",status:"New",potential:110000,followup:"",verification:"Research",notes:"Greek BBQ charcoal buyer prospect."},
+{id:111,company:"Greek Agri Buyer 01",person:"",country:"Greece",city:"",email:"",phone:"",website:"",product:"Sesame Seeds",priority:"B",status:"New",potential:90000,followup:"",verification:"Research",notes:"Greek sesame seed importer for bakery industry."},
+{id:112,company:"Portuguese Agri Buyer 01",person:"",country:"Portugal",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:160000,followup:"",verification:"Research",notes:"Portuguese cocoa bean importer prospect."},
+{id:113,company:"Austrian Agri Buyer 01",person:"",country:"Austria",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:170000,followup:"",verification:"Research",notes:"Austrian cocoa bean importer/chocolate industry prospect."},
+{id:114,company:"Czech Agri Buyer 01",person:"",country:"Czech Republic",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:140000,followup:"",verification:"Research",notes:"Czech cocoa bean importer prospect."},
+{id:115,company:"Swedish Agri Buyer 01",person:"",country:"Sweden",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:130000,followup:"",verification:"Research",notes:"Swedish cocoa bean importer prospect."},
+{id:116,company:"Danish Agri Buyer 01",person:"",country:"Denmark",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:120000,followup:"",verification:"Research",notes:"Danish cocoa bean importer prospect."},
+{id:117,company:"Norwegian Agri Buyer 01",person:"",country:"Norway",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"C",status:"New",potential:100000,followup:"",verification:"Research",notes:"Norwegian cocoa bean importer prospect."},
+{id:118,company:"Finnish Agri Buyer 01",person:"",country:"Finland",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"C",status:"New",potential:90000,followup:"",verification:"Research",notes:"Finnish cocoa bean importer prospect."},
+{id:119,company:"Irish Agri Buyer 01",person:"",country:"Ireland",city:"",email:"",phone:"",website:"",product:"Cocoa Beans",priority:"B",status:"New",potential:110000,followup:"",verification:"Research",notes:"Irish cocoa bean importer prospect."},
+{id:120,company:"German Agri Buyer 04",person:"",country:"Germany",city:"",email:"",phone:"",website:"",product:"Ginger",priority:"B",status:"New",potential:130000,followup:"",verification:"Research",notes:"German ginger importer for food/beverage industry."}
+];
+
+function showPage(page, btn) {
+    document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+    document.getElementById(page + 'Page').style.display = 'block';
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    if (page === 'contacts') renderContacts();
+    if (page === 'rfq') renderRFQs();
+    if (page === 'followups') renderFollowups();
+    if (page === 'deals') renderDeals();
+    if (page === 'dashboard') updateDashboard();
+}
+
+function updateAll() {
+    updateStats();
+    populateCountryFilter();
+    renderContacts();
+    renderRFQs();
+    renderDeals();
+    renderFollowups();
+    updateDashboard();
+}
+
+function updateStats() {
+    document.getElementById('totalContacts').textContent = contacts.length;
+    document.getElementById('priorityA').textContent = contacts.filter(c => c.priority === 'A').length;
+    document.getElementById('contacted').textContent = contacts.filter(c => c.status === 'Contacted').length;
+    document.getElementById('qualified').textContent = contacts.filter(c => c.status === 'Qualified').length;
+    document.getElementById('quoted').textContent = contacts.filter(c => c.status === 'Quoted').length;
+    const totalPotential = contacts.reduce((sum, c) => sum + (parseFloat(c.potential) || 0), 0);
+    document.getElementById('pipelineValue').textContent = '€' + (totalPotential / 1000000).toFixed(1) + 'M';
+
+    document.getElementById('pipeNew').textContent = contacts.filter(c => c.status === 'New').length;
+    document.getElementById('pipeContacted').textContent = contacts.filter(c => c.status === 'Contacted').length;
+    document.getElementById('pipeQualified').textContent = contacts.filter(c => c.status === 'Qualified').length;
+    document.getElementById('pipeQuoted').textContent = contacts.filter(c => c.status === 'Quoted').length;
+    document.getElementById('pipeNegotiating').textContent = contacts.filter(c => c.status === 'Negotiating').length;
+    document.getElementById('pipeWon').textContent = contacts.filter(c => c.status === 'Won').length;
+}
+
+function populateCountryFilter() {
+    const select = document.getElementById('filterCountry');
+    const countries = [...new Set(contacts.map(c => c.country))].sort();
+    select.innerHTML = '<option value="">All Countries</option>' + countries.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function renderContacts() {
+    const search = document.getElementById('searchContacts').value.toLowerCase();
+    const country = document.getElementById('filterCountry').value;
+    const status = document.getElementById('filterStatus').value;
+    const priority = document.getElementById('filterPriority').value;
+    const product = document.getElementById('filterProduct').value;
+
+    let filtered = contacts;
+    if (search) filtered = filtered.filter(c => (c.company + ' ' + (c.person || '') + ' ' + (c.email || '') + ' ' + (c.product || '')).toLowerCase().includes(search));
+    if (country) filtered = filtered.filter(c => c.country === country);
+    if (status) filtered = filtered.filter(c => c.status === status);
+    if (priority) filtered = filtered.filter(c => c.priority === priority);
+    if (product) filtered = filtered.filter(c => c.product === product);
+
+    const tbody = document.getElementById('contactsTable');
+    if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="empty">No contacts found</td></tr>'; return; }
+
+    tbody.innerHTML = filtered.map(c => {
+        const badgeClass = 'badge-' + c.status.toLowerCase();
+        const verifClass = c.verification === 'Verified' ? 'badge-verified' : 'badge-research';
+        const emailLink = c.email ? `<a href="mailto:${c.email}" class="email">${c.email}</a>` : '-';
+        const phone = c.phone || '-';
+        return `<tr>
+            <td class="company">${c.company}</td>
+            <td class="country">${c.country}${c.city ? ', ' + c.city : ''}</td>
+            <td>${c.person || '-'}<br><small>${emailLink}</small><br><small>${phone}</small></td>
+            <td>${c.product}</td>
+            <td class="priority-${c.priority}">${c.priority}</td>
+            <td><span class="badge ${badgeClass}">${c.status}</span></td>
+            <td>€${(c.potential || 0).toLocaleString()}</td>
+            <td><span class="badge ${verifClass}">${c.verification}</span></td>
+            <td>${c.followup || '-'}</td>
+            <td>
+                <button class="btn btn-light" style="padding:6px 10px;font-size:11px;" onclick="editContact(${c.id})">Edit</button>
+                <button class="btn btn-danger" style="padding:6px 10px;font-size:11px;" onclick="deleteContact(${c.id})">Del</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function renderRFQs() {
+    const tbody = document.getElementById('rfqTable');
+    if (rfqs.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No RFQs yet</td></tr>'; return; }
+    tbody.innerHTML = rfqs.map(r => {
+        const badgeClass = 'badge-' + r.status.toLowerCase();
+        return `<tr>
+            <td>RFQ #${r.id}</td>
+            <td class="company">${r.buyer}</td>
+            <td>${r.product}</td>
+            <td>${r.quantity}</td>
+            <td>${r.destination}</td>
+            <td><span class="badge ${badgeClass}">${r.status}</span></td>
+            <td>${r.deadline || '-'}</td>
+            <td><button class="btn btn-light" style="padding:6px 10px;font-size:11px;" onclick="deleteRFQ(${r.id})">Del</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderDeals() {
+    const tbody = document.getElementById('dealTable');
+    if (deals.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="empty">No deals yet</td></tr>'; return; }
+    tbody.innerHTML = deals.map(d => {
+        const badgeClass = 'badge-' + d.status.toLowerCase();
+        return `<tr>
+            <td>Deal #${d.id}</td>
+            <td class="company">${d.buyer}</td>
+            <td>${d.product}</td>
+            <td>${d.quantity}</td>
+            <td>${d.incoterm || '-'}</td>
+            <td>€${(d.value || 0).toLocaleString()}</td>
+            <td><span class="badge ${badgeClass}">${d.status}</span></td>
+            <td>${d.date}</td>
+            <td><button class="btn btn-light" style="padding:6px 10px;font-size:11px;" onclick="deleteDeal(${d.id})">Del</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderFollowups() {
+    const list = document.getElementById('followupList');
+    const upcoming = contacts.filter(c => c.followup).sort((a, b) => new Date(a.followup) - new Date(b.followup));
+    if (upcoming.length === 0) { list.innerHTML = '<div class="empty">No follow-ups scheduled</div>'; return; }
+    const today = new Date().toISOString().split('T')[0];
+    list.innerHTML = upcoming.map(c => {
+        const isOverdue = c.followup < today;
+        const isToday = c.followup === today;
+        const cls = isOverdue ? 'overdue' : (isToday ? 'today' : '');
+        return `<div class="reminder ${cls}">
+            <div><strong>${c.company}</strong> — ${c.product}<br><small>${c.country}${c.person ? ' • ' + c.person : ''}</small></div>
+            <div style="text-align:right;"><strong>${c.followup}</strong><br><small>${isOverdue ? 'Overdue' : (isToday ? 'Today' : 'Upcoming')}</small></div>
+        </div>`;
+    }).join('');
+}
+
+function updateDashboard() {
+    updateStats();
+    const today = new Date().toISOString().split('T')[0];
+    const upcoming = contacts.filter(c => c.followup).sort((a, b) => new Date(a.followup) - new Date(b.followup)).slice(0, 5);
+    const followDiv = document.getElementById('dashboardFollowups');
+    if (upcoming.length === 0) { followDiv.innerHTML = '<div class="empty">No follow-ups scheduled</div>'; }
+    else {
+        followDiv.innerHTML = upcoming.map(c => {
+            const isOverdue = c.followup < today;
+            const isToday = c.followup === today;
+            const cls = isOverdue ? 'overdue' : (isToday ? 'today' : '');
+            return `<div class="reminder ${cls}">
+                <div><strong>${c.company}</strong> — ${c.product}<br><small>${c.country}</small></div>
+                <div style="text-align:right;"><strong>${c.followup}</strong><br><small>${isOverdue ? 'Overdue' : (isToday ? 'Today' : 'Upcoming')}</small></div>
+            </div>`;
+        }).join('');
+    }
+
+    const topProspects = contacts.filter(c => c.priority === 'A').slice(0, 5);
+    const topDiv = document.getElementById('dashboardTopProspects');
+    if (topProspects.length === 0) { topDiv.innerHTML = '<div class="empty">No priority prospects</div>'; }
+    else {
+        topDiv.innerHTML = `<table><thead><tr><th>Company</th><th>Country</th><th>Product</th><th>Potential</th><th>Status</th></tr></thead><tbody>
+            ${topProspects.map(c => `<tr>
+                <td class="company">${c.company}</td>
+                <td class="country">${c.country}</td>
+                <td>${c.product}</td>
+                <td>€${(c.potential || 0).toLocaleString()}</td>
+                <td><span class="badge badge-${c.status.toLowerCase()}">${c.status}</span></td>
+            </tr>`).join('')}
+        </tbody></table>`;
+    }
+}
+
+function openContactModal() {
+    document.getElementById('contactModalTitle').textContent = 'Add Prospect';
+    document.getElementById('contactForm').reset();
+    document.getElementById('contactId').value = '';
+    document.getElementById('contactModal').classList.add('show');
+}
+
+function editContact(id) {
+    const c = contacts.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('contactModalTitle').textContent = 'Edit Prospect';
+    document.getElementById('contactId').value = c.id;
+    document.getElementById('company').value = c.company;
+    document.getElementById('contactPerson').value = c.person || '';
+    document.getElementById('country').value = c.country;
+    document.getElementById('city').value = c.city || '';
+    document.getElementById('email').value = c.email || '';
+    document.getElementById('phone').value = c.phone || '';
+    document.getElementById('website').value = c.website || '';
+    document.getElementById('product').value = c.product;
+    document.getElementById('priority').value = c.priority;
+    document.getElementById('status').value = c.status;
+    document.getElementById('potential').value = c.potential || 0;
+    document.getElementById('followup').value = c.followup || '';
+    document.getElementById('verification').value = c.verification;
+    document.getElementById('notes').value = c.notes || '';
+    document.getElementById('contactModal').classList.add('show');
+}
+
+function saveContact(e) {
+    e.preventDefault();
+    const id = document.getElementById('contactId').value;
+    const data = {
+        id: id ? parseInt(id) : Date.now(),
+        company: document.getElementById('company').value,
+        person: document.getElementById('contactPerson').value,
+        country: document.getElementById('country').value,
+        city: document.getElementById('city').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        website: document.getElementById('website').value,
+        product: document.getElementById('product').value,
+        priority: document.getElementById('priority').value,
+        status: document.getElementById('status').value,
+        potential: parseFloat(document.getElementById('potential').value) || 0,
+        followup: document.getElementById('followup').value,
+        verification: document.getElementById('verification').value,
+        notes: document.getElementById('notes').value
+    };
+    if (id) {
+        const idx = contacts.findIndex(c => c.id === parseInt(id));
+        if (idx >= 0) contacts[idx] = data;
+    } else {
+        contacts.push(data);
+    }
+    saveData();
+    closeModal('contactModal');
+    updateAll();
+    showToast('Prospect saved');
+}
+
+function deleteContact(id) {
+    if (!confirm('Delete this prospect?')) return;
+    contacts = contacts.filter(c => c.id !== id);
+    saveData();
+    updateAll();
+    showToast('Prospect deleted');
+}
+
+function openRFQModal() {
+    document.getElementById('rfqModal').classList.add('show');
+}
+
+function saveRFQ(e) {
+    e.preventDefault();
+    const data = {
+        id: Date.now(),
+        buyer: document.getElementById('rfqBuyer').value,
+        product: document.getElementById('rfqProduct').value,
+        quantity: document.getElementById('rfqQuantity').value,
+        destination: document.getElementById('rfqDestination').value,
+        status: document.getElementById('rfqStatus').value,
+        deadline: document.getElementById('rfqDeadline').value
+    };
+    rfqs.push(data);
+    saveData();
+    closeModal('rfqModal');
+    e.target.reset();
+    renderRFQs();
+    showToast('RFQ saved');
+}
+
+function deleteRFQ(id) {
+    if (!confirm('Delete this RFQ?')) return;
+    rfqs = rfqs.filter(r => r.id !== id);
+    saveData();
+    renderRFQs();
+    showToast('RFQ deleted');
+}
+
+function openDealModal() {
+    document.getElementById('dealModal').classList.add('show');
+}
+
+function saveDeal(e) {
+    e.preventDefault();
+    const data = {
+        id: Date.now(),
+        buyer: document.getElementById('dealBuyer').value,
+        product: document.getElementById('dealProduct').value,
+        quantity: document.getElementById('dealQuantity').value,
+        incoterm: document.getElementById('dealIncoterm').value,
+        value: parseFloat(document.getElementById('dealValue').value) || 0,
+        status: document.getElementById('dealStatus').value,
+        date: new Date().toISOString().split('T')[0],
+        notes: document.getElementById('dealNotes').value
+    };
+    deals.push(data);
+    saveData();
+    closeModal('dealModal');
+    e.target.reset();
+    renderDeals();
+    showToast('Deal saved');
+}
+
+function deleteDeal(id) {
+    if (!confirm('Delete this deal?')) return;
+    deals = deals.filter(d => d.id !== id);
+    saveData();
+    renderDeals();
+    showToast('Deal deleted');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function goMarketplace() {
+    window.location.href = 'index.html';
+}
+
+function exportCSV() {
+    const headers = ['ID','Company','Person','Country','City','Email','Phone','Website','Product','Priority','Status','Potential','Followup','Verification','Notes'];
+    const rows = contacts.map(c => [c.id, c.company, c.person || '', c.country, c.city || '', c.email || '', c.phone || '', c.website || '', c.product, c.priority, c.status, c.potential || 0, c.followup || '', c.verification, (c.notes || '').replace(/\n/g, ' ')]);
+    const csv = [headers.join(','), ...rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(','))].join('\n');
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'naijaswap_crm_contacts.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CRM exported to CSV');
+}
+
+function importCSV(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const text = ev.target.result;
+        const lines = text.split('\n').filter(l => l.trim());
+        if (lines.length < 2) { showToast('Invalid CSV'); return; }
+        const newContacts = [];
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',').map(c => c.replace(/^"|"$/g, '').replace(/""/g, '"'));
+            if (cols.length < 5) continue;
+            newContacts.push({
+                id: parseInt(cols[0]) || Date.now() + i,
+                company: cols[1], person: cols[2], country: cols[3], city: cols[4],
+                email: cols[5], phone: cols[6], website: cols[7], product: cols[8] || 'Hardwood Charcoal',
+                priority: cols[9] || 'B', status: cols[10] || 'New', potential: parseFloat(cols[11]) || 0,
+                followup: cols[12], verification: cols[13] || 'Research', notes: cols[14] || ''
+            });
+        }
+        contacts = [...contacts, ...newContacts];
+        saveData();
+        updateAll();
+        showToast('Imported ' + newContacts.length + ' contacts');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+// Initialize
+loadData();
+updateAll();
+</script>
+</body>
+</html>

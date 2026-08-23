@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaijaSwap Delivery & Logistics — Local delivery within Nigeria and international B2B shipping with step-by-step process.">
+<meta name="author" content="RadiantWaves Media Ltd">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.json">
+<title>Delivery & Logistics — NaijaSwap | RadiantWaves Media Ltd</title>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --success: #28a745; --danger: #dc3545; --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+  --trade-green: #1a5f2a; --trade-gold: #c9a227; --trade-accent: #e87400;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; line-height: 1.6;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(255,107,53,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(15,52,96,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem;
+  background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--primary); box-shadow: var(--shadow);
+}
+.logo a { font-size: 1.5rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.logo span { background: linear-gradient(90deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.topbar nav { display: flex; gap: 0.3rem; }
+.topbar nav a {
+  color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500;
+  font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 8px; transition: var(--transition);
+}
+.topbar nav a:hover, .topbar nav a.active { color: var(--primary); background: rgba(255,107,53,0.1); }
+.header-actions { display: flex; align-items: center; gap: 0.8rem; }
+.header-actions button {
+  padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: var(--white); font-size: 0.9rem;
+  cursor: pointer; transition: var(--transition);
+}
+.header-actions button:hover { background: var(--primary); border-color: var(--primary); }
+#loginButton { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+.section { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; position: relative; z-index: 1; }
+.section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+.card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.card p { font-size: 0.85rem; color: var(--gray); line-height: 1.5; }
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid #e0e0e0; background: var(--white); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { background: #f8f9fa; text-align: left; padding: 10px 14px; font-size: 0.7rem; text-transform: uppercase; color: var(--gray); font-weight: 700; border-bottom: 1px solid #e0e0e0; }
+td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; }
+tr:hover td { background: rgba(26,95,42,0.03); }
+.badge {
+  font-size: 0.65rem; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.bdg-verified { background: #dcfce7; color: #166534; }
+.bdg-pending { background: #fef3c7; color: #92400e; }
+.bdg-danger { background: #fee2e2; color: #991b1b; }
+.bdg-gray { background: #e8e8e8; color: #555; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.7rem 1.4rem; border-radius: 8px; border: none;
+  font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition);
+  text-decoration: none; font-family: inherit;
+}
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+.btn-secondary { background: var(--white); color: var(--dark); border: 1px solid #e0e0e0; }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn-green { background: var(--trade-green); color: white; }
+.btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,95,42,0.4); }
+.tabs { display: flex; gap: 0.3rem; border-bottom: 2px solid #e0e0e0; margin-bottom: 1.5rem; }
+.tab {
+  padding: 0.6rem 1.2rem; background: none; border: none; font-size: 0.85rem;
+  font-weight: 700; color: var(--gray); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white;
+  padding: 14px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 200;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+footer {
+  background: var(--dark); color: var(--white); padding: 3rem;
+  position: relative; z-index: 1; margin-top: 3rem;
+}
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+.footer-grid h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-grid a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.5rem; transition: var(--transition); }
+.footer-grid a:hover { color: var(--primary); padding-left: 5px; }
+.footer-grid p { color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+.copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.company-footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+.hidden { display: none !important; }
+
+.local-hero {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; padding: 3rem 2rem; text-align: center; position: relative; z-index: 1;
+}
+.local-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+.local-hero p { opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1rem; }
+
+.intl-hero {
+  background: linear-gradient(135deg, var(--secondary), var(--dark));
+  color: white; padding: 3rem 2rem; text-align: center; position: relative; z-index: 1;
+}
+.intl-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+.intl-hero h1 span { color: var(--primary-light); }
+.intl-hero p { opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1rem; }
+
+.courier-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.courier-card {
+  background: var(--white); border-radius: 10px; border: 1px solid #e0e0e0;
+  padding: 1.2rem; text-align: center; transition: var(--transition);
+}
+.courier-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.courier-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.courier-card h4 { font-size: 0.9rem; margin-bottom: 0.2rem; }
+.courier-card p { font-size: 0.75rem; color: var(--gray); }
+.courier-card .time { font-size: 0.7rem; color: var(--primary); font-weight: 600; margin-top: 0.4rem; }
+
+.local-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+.local-card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; transition: var(--transition);
+}
+.local-card:hover { box-shadow: var(--shadow); }
+.local-card h4 { font-size: 1rem; margin-bottom: 0.4rem; color: var(--secondary); }
+.local-card p { font-size: 0.82rem; color: var(--gray); line-height: 1.5; }
+
+.timeline {
+  position: relative; padding-left: 2rem;
+}
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, var(--trade-green), var(--primary));
+}
+.tl-item {
+  position: relative; padding: 1rem 0 1.5rem 1.5rem;
+}
+.tl-item::before {
+  content: ''; position: absolute; left: -1.55rem; top: 1.3rem; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--trade-green); border: 3px solid var(--white);
+  box-shadow: 0 0 0 2px var(--trade-green);
+}
+.tl-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+.tl-item p { font-size: 0.82rem; color: var(--gray); line-height: 1.5; }
+.tl-item .time { font-size: 0.75rem; color: var(--primary); font-weight: 700; }
+
+.shipping-line-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.shipping-line-card {
+  background: var(--white); border-radius: 10px; border: 1px solid #e0e0e0;
+  padding: 1.2rem; transition: var(--transition);
+}
+.shipping-line-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.shipping-line-card h4 { font-size: 0.9rem; margin-bottom: 0.3rem; color: var(--secondary); }
+.shipping-line-card p { font-size: 0.78rem; color: var(--gray); line-height: 1.5; }
+.shipping-line-card .route { font-size: 0.7rem; color: var(--primary); font-weight: 600; margin-top: 0.4rem; }
+
+.doc-checklist {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem;
+}
+.doc-checklist h4 { font-size: 1rem; margin-bottom: 1rem; color: var(--secondary); }
+.doc-checklist ul { list-style: none; }
+.doc-checklist li {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0; font-size: 0.85rem; color: var(--dark);
+  border-bottom: 1px solid #f0f0f0;
+}
+.doc-checklist li:last-child { border-bottom: none; }
+.doc-checklist .check { color: var(--trade-green); font-weight: 700; }
+
+.guideline-box {
+  background: linear-gradient(135deg, rgba(15,52,96,0.05), rgba(255,107,53,0.05));
+  border-left: 4px solid var(--trade-green); padding: 1.2rem; border-radius: 0 8px 8px 0;
+  margin-bottom: 1.5rem;
+}
+.guideline-box h4 { color: var(--trade-green); margin-bottom: 0.5rem; font-size: 0.95rem; }
+.guideline-box p, .guideline-box li { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+.guideline-box ul { padding-left: 1.2rem; }
+
+.port-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+.port-card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; transition: var(--transition);
+}
+.port-card:hover { box-shadow: var(--shadow); }
+.port-card h3 { font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+.port-card p { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
+.port-card ul { list-style: none; margin-top: 0.6rem; }
+.port-card ul li { font-size: 0.82rem; color: var(--dark); padding: 2px 0; }
+
+.container-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+.ct-card {
+  background: var(--white); border-radius: 10px; border: 1px solid #e0e0e0;
+  padding: 1.2rem; text-align: center;
+}
+.ct-card .icon { font-size: 2rem; margin-bottom: 0.4rem; }
+.ct-card h4 { font-size: 0.9rem; }
+.ct-card p { font-size: 0.75rem; color: var(--gray); margin-top: 0.2rem; }
+
+.contract-banner {
+  background: linear-gradient(135deg, var(--trade-green), #2d8a3e);
+  color: white; border-radius: var(--radius); padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.contract-banner h3 {
+  font-size: 1.1rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.contract-banner ul {
+  list-style: none; padding: 0; margin: 0;
+}
+.contract-banner ul li {
+  padding: 0.4rem 0; padding-left: 1.5rem; position: relative;
+  font-size: 0.9rem; line-height: 1.5;
+}
+.contract-banner ul li::before {
+  content: "✓"; position: absolute; left: 0; color: #a3e6b0; font-weight: 700;
+}
+.contract-banner .highlight {
+  background: rgba(255,255,255,0.15); padding: 0.8rem 1rem; border-radius: 8px;
+  margin-top: 0.8rem; font-size: 0.85rem; line-height: 1.6;
+}
+.contract-banner .highlight strong { color: #ffd700; }
+
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; padding: 0.8rem 1rem; }
+  .topbar nav { order: 3; width: 100%; justify-content: center; margin-top: 0.5rem; gap: 0.3rem; }
+  .card-grid { grid-template-columns: 1fr; }
+  .port-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="index.html">NaijaSwap</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="listings.html">Listings</a>
+    <a href="sell.html">Sell</a>
+    <a href="chat.html">Chat</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="payments.html">Payments</a>
+    <a href="delivery.html" class="active">Delivery</a>
+    <a href="profile.html">Profile</a>
+  </nav>
+  <div class="header-actions">
+    <button id="loginButton">Login</button>
+    <button id="profileButton" style="display:none">Profile</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<section class="section" style="padding-bottom:0;">
+  <div class="tabs">
+    <button class="tab active" id="tabLocal" onclick="switchTab('local')">Local Delivery (Nigeria)</button>
+    <button class="tab" id="tabIntl" onclick="switchTab('intl')">International Shipping (B2B Export)</button>
+  </div>
+</section>
+
+<!-- LOCAL DELIVERY SECTION -->
+<div id="localDeliverySection">
+  <section class="local-hero">
+    <h1>Local Delivery <span style="color:#fff;">Within Nigeria</span></h1>
+    <p>Fast, reliable delivery options for local marketplace purchases. From pickup to door delivery across all 36 states.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Delivery Options</div>
+    <div class="local-options">
+      <div class="local-card">
+        <h4>Pickup</h4>
+        <p>Buyer picks up the item directly from the seller at an agreed location. No delivery fee. Best for same-day collection.</p>
+      </div>
+      <div class="local-card">
+        <h4>Door Delivery</h4>
+        <p>Item delivered to the buyer's specified address. Seller or courier handles transport. Delivery fee set by seller.</p>
+      </div>
+      <div class="local-card">
+        <h4>Pay on Delivery</h4>
+        <p>Buyer pays cash or transfers to the delivery agent upon receipt. Only available for trusted sellers with verified ratings.</p>
+      </div>
+      <div class="local-card">
+        <h4>Escrow Delivery</h4>
+        <p>Payment held in NaijaSwap escrow. Released to seller only after buyer confirms receipt and satisfaction.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Trusted Couriers & Logistics Partners</div>
+    <div class="courier-grid">
+      <div class="courier-card"><div class="icon">🚚</div><h4>GIG Logistics</h4><p>Nationwide coverage</p><div class="time">1-3 days</div></div>
+      <div class="courier-card"><div class="icon">✈️</div><h4>DHL Domestic</h4><p>Express delivery</p><div class="time">Same day - 2 days</div></div>
+      <div class="courier-card"><div class="icon">📦</div><h4>FedEx Nigeria</h4><p>Reliable tracking</p><div class="time">1-3 days</div></div>
+      <div class="courier-card"><div class="icon">🚌</div><h4>Peace Mass Transit</h4><p>Cargo services</p><div class="time">1-4 days</div></div>
+      <div class="courier-card"><div class="icon">🚐</div><h4>ABC Transport</h4><p>Inter-state cargo</p><div class="time">1-4 days</div></div>
+      <div class="courier-card"><div class="icon">🛵</div><h4>God is Good Motors</h4><p>Parcel delivery</p><div class="time">1-3 days</div></div>
+      <div class="courier-card"><div class="icon">🏍️</div><h4>Self Delivery</h4><p>Seller's own rider</p><div class="time">Same day</div></div>
+      <div class="courier-card"><div class="icon">📍</div><h4>Other Courier</h4><p>As agreed by seller</p><div class="time">Varies</div></div>
+    </div>
+
+    <div class="section-title">Delivery Process</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <h4>Order Confirmed</h4>
+        <p>Buyer completes payment or selects Cash on Delivery. Seller receives order notification.</p>
+        <div class="time">Step 1</div>
+      </div>
+      <div class="tl-item">
+        <h4>Seller Prepares Item</h4>
+        <p>Seller packages the item and books a courier or arranges self-delivery.</p>
+        <div class="time">Step 2</div>
+      </div>
+      <div class="tl-item">
+        <h4>Pickup / Dispatch</h4>
+        <p>Courier collects item from seller or buyer picks up at agreed location.</p>
+        <div class="time">Step 3</div>
+      </div>
+      <div class="tl-item">
+        <h4>In Transit</h4>
+        <p>Item moves through courier network. Tracking number provided where available.</p>
+        <div class="time">Step 4</div>
+      </div>
+      <div class="tl-item">
+        <h4>Delivery & Confirmation</h4>
+        <p>Item arrives at buyer's address. Buyer inspects and confirms receipt on NaijaSwap.</p>
+        <div class="time">Step 5</div>
+      </div>
+    </div>
+
+    <div class="section-title">Delivery Fees by Zone</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Zone</th><th>States</th><th>Estimated Fee (NGN)</th><th>Estimated Time</th></tr></thead>
+        <tbody>
+          <tr><td><b>Same City</b></td><td>Within same city</td><td>500 - 2,000</td><td>Same day - 1 day</td></tr>
+          <tr><td><b>Nearby State</b></td><td>Neighboring states</td><td>1,500 - 3,500</td><td>1 - 2 days</td></tr>
+          <tr><td><b>South-West</b></td><td>Lagos, Ogun, Oyo, Osun, Ekiti, Ondo, Kwara</td><td>2,000 - 4,500</td><td>1 - 3 days</td></tr>
+          <tr><td><b>South-East</b></td><td>Anambra, Enugu, Abia, Imo, Ebonyi</td><td>2,500 - 5,000</td><td>2 - 4 days</td></tr>
+          <tr><td><b>South-South</b></td><td>Rivers, Delta, Akwa Ibom, Cross River, Bayelsa, Edo</td><td>2,500 - 5,000</td><td>2 - 4 days</td></tr>
+          <tr><td><b>North-Central</b></td><td>Abuja, Nasarawa, Niger, Kogi, Plateau, Benue</td><td>3,000 - 6,000</td><td>2 - 4 days</td></tr>
+          <tr><td><b>North-West</b></td><td>Kano, Kaduna, Sokoto, Zamfara, Katsina, Kebbi, Jigawa</td><td>3,500 - 7,000</td><td>3 - 5 days</td></tr>
+          <tr><td><b>North-East</b></td><td>Borno, Bauchi, Yobe, Adamawa, Gombe, Taraba</td><td>3,500 - 7,000</td><td>3 - 5 days</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<!-- INTERNATIONAL SHIPPING SECTION -->
+<div id="intlDeliverySection" class="hidden">
+  <section class="intl-hero">
+    <h1>International Shipping <span>for B2B Export</span></h1>
+    <p>Step-by-step ocean freight, air cargo, and documentation guidance for exporting from Nigeria to Europe, Asia, and the Americas.</p>
+  </section>
+
+  <section class="section">
+    <!-- NIGERIAN EXPORT PAYMENT STRUCTURE — FRONT AND CENTER -->
+    <div class="contract-banner">
+      <h3>📋 Standard Nigerian Export Payment Terms</h3>
+      <ul>
+        <li><strong>70–80% paid against B/L Copy</strong> — The bulk of payment is released only when the seller provides a copy of the Bill of Lading (proof of shipment). No large advance payment required.</li>
+        <li><strong>20–30% final payment on arrival & inspection</strong> — The balance is held in escrow and released only after goods arrive at destination and the buyer confirms quality and quantity through inspection.</li>
+        <li>These terms are stated in the Sales Contract from day one and apply to all B2B export transactions on NaijaSwap.</li>
+      </ul>
+      <div class="highlight">
+        <strong>Why this matters:</strong> This is the industry-standard payment structure for Nigerian commodity exports. It protects both buyer and seller — the seller ships with confidence knowing payment is secured against B/L, while the buyer retains a holdback to ensure goods match specifications on arrival. NaijaSwap escrow enforces these terms automatically.
+      </div>
+    </div>
+
+    <!-- GUIDELINES -->
+    <div class="guideline-box">
+      <h4>📋 Export Guidelines — Before You Ship</h4>
+      <ul>
+        <li>Ensure your company is registered with CAC and has a valid NEPC export certificate</li>
+        <li>Verify product quality with SGS, Bureau Veritas, or Intertek before shipment</li>
+        <li>Confirm buyer's payment structure is locked in the Sales Contract: <strong>70–80% against B/L copy, 20–30% on arrival & inspection</strong></li>
+        <li>Obtain all required export permits from Nigerian Customs (NCS) and SON where applicable</li>
+        <li>Pack goods according to international shipping standards — ISPM-15 for wooden pallets</li>
+        <li>Label all packages with HS codes, country of origin, and handling instructions</li>
+        <li>Insure cargo with marine insurance (110% of CIF value recommended)</li>
+        <li>Never ship without confirmed payment terms or signed contract</li>
+      </ul>
+    </div>
+
+    <!-- SHIPPING LINES -->
+    <div class="section-title">Partner Shipping Lines</div>
+    <div class="shipping-line-grid">
+      <div class="shipping-line-card">
+        <h4>🚢 Maersk Line</h4>
+        <p>World's largest container carrier. Weekly sailings from Lagos (Apapa/Tincan) to Rotterdam, Hamburg, and Felixstowe. FCL and LCL available.</p>
+        <div class="route">Lagos → Europe: 14-21 days</div>
+      </div>
+      <div class="shipping-line-card">
+        <h4>🚢 MSC (Mediterranean Shipping)</h4>
+        <p>Second-largest global carrier. Direct service to Mediterranean and Northern Europe. Competitive 20ft/40ft container rates.</p>
+        <div class="route">Lagos → Europe: 12-18 days</div>
+      </div>
+      <div class="shipping-line-card">
+        <h4>🚢 CMA CGM</h4>
+        <p>French line with strong West Africa presence. Reefer containers for temperature-sensitive agri-exports. Regular service to France and Spain.</p>
+        <div class="route">Lagos → France/Spain: 15-22 days</div>
+      </div>
+      <div class="shipping-line-card">
+        <h4>🚢 Grimaldi Lines</h4>
+        <p>Specialist in RoRo and container freight from West Africa to Europe. Preferred partner for charcoal, vehicles, and bulk commodities.</p>
+        <div class="route">Lagos → Italy/Antwerp: 18-25 days</div>
+      </div>
+      <div class="shipping-line-card">
+        <h4>✈️ DHL Global Forwarding</h4>
+        <p>Air freight for high-value, time-sensitive shipments. Door-to-door with customs brokerage. Best for samples and urgent orders.</p>
+        <div class="route">Lagos → Worldwide: 3-7 days</div>
+      </div>
+      <div class="shipping-line-card">
+        <h4>🚢 PIL (Pacific International)</h4>
+        <p>Asian-focused carrier with Nigeria connections. Good rates for exports to China, India, and Southeast Asia.</p>
+        <div class="route">Lagos → Asia: 25-35 days</div>
+      </div>
+    </div>
+
+    <!-- STEP BY STEP PROCESS -->
+    <div class="section-title">Step-by-Step International Shipping Process</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <h4>Step 1: Order Confirmation & Contract Signing</h4>
+        <p>Buyer issues Purchase Order (PO). Seller confirms availability and pricing. Both parties sign the Sales Contract with Incoterm, <strong>payment terms (70–80% against B/L copy; 20–30% on arrival & inspection)</strong>, and delivery schedule. NaijaSwap escrow is initiated.</p>
+        <div class="time">Day 0-2</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 2: Production & Quality Preparation</h4>
+        <p>Supplier processes, sorts, and packages goods according to contract specifications. Independent inspection (SGS/Bureau Veritas) arranged if required by buyer or contract terms.</p>
+        <div class="time">Day 3-14</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 3: Booking & Documentation</h4>
+        <p>Seller books vessel space with chosen shipping line (Maersk, MSC, CMA CGM, Grimaldi). Prepares export documents: Commercial Invoice, Packing List, Certificate of Origin, SONCAP (if required), and Export Permit from NCS.</p>
+        <div class="time">Day 10-16</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 4: Customs Clearance & Loading</h4>
+        <p>Goods transported to port (Apapa, Tincan, Onne, or Calabar). Nigerian Customs clears export declaration. Container is loaded onto vessel. Shipping line issues Bill of Lading (B/L).</p>
+        <div class="time">Day 14-18</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 5: B/L Copy & First Payment Milestone (70–80%)</h4>
+        <p>Seller uploads B/L copy to NaijaSwap. Buyer verifies shipment details. <strong>70–80% of contract value is released from escrow to seller</strong> upon B/L verification. This is the standard Nigerian export payment practice — no large advance payment was required.</p>
+        <div class="time">Day 18-20</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 6: Ocean Transit & Tracking</h4>
+        <p>Vessel departs Nigerian port. Buyer receives original B/L and can track shipment via shipping line website. Goods are in transit to destination port.</p>
+        <div class="time">Day 20-40</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 7: Arrival & Destination Customs</h4>
+        <p>Goods arrive at destination port (Rotterdam, Hamburg, Felixstowe, etc.). Buyer's customs broker clears import declaration. Duties and VAT paid by buyer.</p>
+        <div class="time">Day 40-45</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 8: Inspection & Final Payment (20–30%)</h4>
+        <p>Buyer inspects quality and quantity against contract specifications. If satisfactory, <strong>remaining 20–30% balance is released from escrow to seller</strong>. If discrepancies are found, the holdback covers remediation or dispute resolution.</p>
+        <div class="time">Day 45-48</div>
+      </div>
+      <div class="tl-item">
+        <h4>Step 9: Final Delivery</h4>
+        <p>Goods transported from port to buyer's warehouse or factory. Delivery receipt signed. Transaction complete. Both parties leave feedback on NaijaSwap.</p>
+        <div class="time">Day 48-55</div>
+      </div>
+    </div>
+
+    <!-- DOCUMENT CHECKLIST -->
+    <div class="section-title">Required Export Documents Checklist</div>
+    <div class="doc-checklist">
+      <ul>
+        <li><span class="check">✓</span> Commercial Invoice (3 copies, signed and stamped)</li>
+        <li><span class="check">✓</span> Packing List (detailed weight and dimensions per package)</li>
+        <li><span class="check">✓</span> Bill of Lading (B/L) or Sea Waybill</li>
+        <li><span class="check">✓</span> Certificate of Origin (from Chamber of Commerce or NEPC)</li>
+        <li><span class="check">✓</span> Export Declaration Form (from Nigerian Customs)</li>
+        <li><span class="check">✓</span> SONCAP Certificate (for regulated products to certain countries)</li>
+        <li><span class="check">✓</span> Phytosanitary Certificate (for agricultural products)</li>
+        <li><span class="check">✓</span> Fumigation Certificate (for wooden packaging and agricultural goods)</li>
+        <li><span class="check">✓</span> Quality/Inspection Certificate (SGS, Bureau Veritas, or Intertek)</li>
+        <li><span class="check">✓</span> Insurance Certificate (marine cargo insurance)</li>
+        <li><span class="check">✓</span> Sales Contract with payment terms (generated by NaijaSwap)</li>
+        <li><span class="check">✓</span> Proforma Invoice (issued before shipment)</li>
+      </ul>
+    </div>
+
+    <!-- PORTS -->
+    <div class="section-title" style="margin-top:2rem;">Nigerian Export Ports</div>
+    <div class="port-grid">
+      <div class="port-card">
+        <h3>⚓ Lagos (Apapa / Tincan)</h3>
+        <p>Nigeria's busiest port handling 70% of maritime trade. Best for containerized cargo. Direct connections to Europe, Asia, and Americas.</p>
+        <ul>
+          <li>• Container terminals: APMT, Tincan Island</li>
+          <li>• Best for: General cargo, containers, vehicles</li>
+          <li>• Shipping lines: Maersk, MSC, CMA CGM, Grimaldi</li>
+        </ul>
+      </div>
+      <div class="port-card">
+        <h3>⚓ Port Harcourt (Onne)</h3>
+        <p>Deep-water port serving the oil and gas industry. Also handles agricultural exports from the Niger Delta region.</p>
+        <ul>
+          <li>• Free Zone status available</li>
+          <li>• Best for: Oil & gas, agri-exports from South-South</li>
+          <li>• Shipping lines: Maersk, MSC, PIL</li>
+        </ul>
+      </div>
+      <div class="port-card">
+        <h3>⚓ Calabar Port</h3>
+        <p>Strategic port for exports to Central and West African markets. Less congested than Lagos. Good for bulk agricultural commodities.</p>
+        <ul>
+          <li>• Dry bulk terminal available</li>
+          <li>• Best for: Cocoa, palm oil, rubber, timber</li>
+          <li>• Shipping lines: Grimaldi, regional carriers</li>
+        </ul>
+      </div>
+      <div class="port-card">
+        <h3>⚓ Warri Port</h3>
+        <p>Serves the Midwest and Niger Delta regions. Handles general cargo and bulk commodities. Good alternative to Lagos congestion.</p>
+        <ul>
+          <li>• River port with draft limitations</li>
+          <li>• Best for: Local bulk cargo, regional trade</li>
+          <li>• Shipping lines: Regional and coastal vessels</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CONTAINER TYPES -->
+    <div class="section-title">Container Types & Uses</div>
+    <div class="container-types">
+      <div class="ct-card"><div class="icon">📦</div><h4>20ft Dry</h4><p>~33 CBM | General cargo, bags, boxes</p></div>
+      <div class="ct-card"><div class="icon">📦</div><h4>40ft Dry</h4><p>~67 CBM | Bulk commodities, pallets</p></div>
+      <div class="ct-card"><div class="icon">❄️</div><h4>40ft Reefer</h4><p>Temperature controlled | Fresh produce, frozen</p></div>
+      <div class="ct-card"><div class="icon">🚗</div><h4>RoRo</h4><p>Roll-on/Roll-off | Vehicles, heavy machinery</p></div>
+      <div class="ct-card"><div class="icon">🏗️</div><h4>Open Top</h4><p>Top loading | Oversized cargo, machinery</p></div>
+      <div class="ct-card"><div class="icon">💧</div><h4>Flexitank</h4><p>Liquid bulk | Palm oil, chemicals, beverages</p></div>
+    </div>
+
+    <!-- SHIPPING COSTS TABLE -->
+    <div class="section-title" style="margin-top:2rem;">Estimated Shipping Costs (Lagos to Europe)</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Route</th><th>Container</th><th>Freight Cost (USD)</th><th>Transit Time</th><th>Shipping Line</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lagos → Rotterdam</td><td>20ft Dry</td><td>$1,800 - $2,500</td><td>14-18 days</td><td>Maersk, MSC</td></tr>
+          <tr><td>Lagos → Hamburg</td><td>20ft Dry</td><td>$1,900 - $2,600</td><td>16-20 days</td><td>Maersk, MSC</td></tr>
+          <tr><td>Lagos → Felixstowe</td><td>20ft Dry</td><td>$2,000 - $2,800</td><td>18-22 days</td><td>Maersk, CMA CGM</td></tr>
+          <tr><td>Lagos → Marseille</td><td>20ft Dry</td><td>$1,700 - $2,400</td><td>15-19 days</td><td>CMA CGM, MSC</td></tr>
+          <tr><td>Lagos → Antwerp</td><td>40ft Dry</td><td>$3,200 - $4,200</td><td>17-23 days</td><td>MSC, Grimaldi</td></tr>
+          <tr><td>Lagos → Barcelona</td><td>40ft Dry</td><td>$2,800 - $3,800</td><td>16-21 days</td><td>CMA CGM, MSC</td></tr>
+          <tr><td>Lagos → Genoa</td><td>40ft Reefer</td><td>$5,500 - $7,500</td><td>18-25 days</td><td>Grimaldi, MSC</td></tr>
+          <tr><td>Lagos → Shanghai</td><td>40ft Dry</td><td>$2,500 - $3,500</td><td>25-32 days</td><td>Maersk, PIL</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.8rem; color:var(--gray); margin-top:0.5rem;">* Rates are estimates and subject to change based on fuel surcharges, peak season, and availability. Contact shipping lines for firm quotes.</p>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3>NaijaSwap</h3>
+      <p>A global marketplace connecting buyers and sellers securely worldwide.</p>
+      <p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p>
+    </div>
+    <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div>
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p>
+      <p>Available Worldwide - 45+ Countries</p>
+    </div>
+  </div>
+  <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd - Registered Company - Secure Escrow Payments - Verified Sellers - Global Shipping</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
+  return null;
+}
+
+function initAuth() {
+  const currentUser = getCurrentUser();
+  const loginBtn = document.getElementById('loginButton');
+  const profileBtn = document.getElementById('profileButton');
+  if (currentUser) {
+    loginBtn.textContent = 'Logout';
+    loginBtn.onclick = () => { localStorage.removeItem('naijaswap_user'); window.location.reload(); };
+    profileBtn.style.display = 'inline-block';
+    profileBtn.textContent = (currentUser.displayName || currentUser.email || 'Profile').split(' ')[0];
+    profileBtn.onclick = () => window.location.href = 'profile.html';
+  } else {
+    loginBtn.textContent = 'Login';
+    loginBtn.onclick = () => window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+    profileBtn.style.display = 'none';
+  }
+}
+
+function switchTab(tab) {
+  const localSection = document.getElementById('localDeliverySection');
+  const intlSection = document.getElementById('intlDeliverySection');
+  const tabLocal = document.getElementById('tabLocal');
+  const tabIntl = document.getElementById('tabIntl');
+
+  if (tab === 'intl') {
+    localSection.classList.add('hidden');
+    intlSection.classList.remove('hidden');
+    tabLocal.classList.remove('active');
+    tabIntl.classList.add('active');
+  } else {
+    localSection.classList.remove('hidden');
+    intlSection.classList.add('hidden');
+    tabLocal.classList.add('active');
+    tabIntl.classList.remove('active');
+  }
+}
+
+initAuth();
+</script>
+</body>
+</html>

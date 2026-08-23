@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NaijaSwap Payments — Secure local and international payment methods with escrow protection.">
+<meta name="author" content="RadiantWaves Media Ltd">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.json">
+<title>Payments — NaijaSwap | RadiantWaves Media Ltd</title>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --success: #28a745; --danger: #dc3545; --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+  --trade-green: #1a5f2a; --trade-gold: #c9a227; --trade-accent: #e87400;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; line-height: 1.6;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 20% 30%, rgba(255,107,53,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(15,52,96,0.06) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem;
+  background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--primary); box-shadow: var(--shadow);
+}
+.logo a { font-size: 1.5rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.logo span { background: linear-gradient(90deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.topbar nav { display: flex; gap: 0.3rem; }
+.topbar nav a {
+  color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500;
+  font-size: 0.85rem; padding: 0.4rem 0.7rem; border-radius: 8px; transition: var(--transition);
+}
+.topbar nav a:hover, .topbar nav a.active { color: var(--primary); background: rgba(255,107,53,0.1); }
+.header-actions { display: flex; align-items: center; gap: 0.8rem; }
+.header-actions button {
+  padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: var(--white); font-size: 0.9rem;
+  cursor: pointer; transition: var(--transition);
+}
+.header-actions button:hover { background: var(--primary); border-color: var(--primary); }
+#loginButton { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+.section { max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem; position: relative; z-index: 1; }
+.section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+.card {
+  background: var(--white); border-radius: var(--radius); border: 1px solid #e0e0e0;
+  padding: 1.5rem; transition: var(--transition); margin-bottom: 1.5rem;
+}
+.card:hover { box-shadow: var(--shadow); }
+.card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.card p { font-size: 0.85rem; color: var(--gray); line-height: 1.5; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--dark); }
+.form-group label .req { color: var(--danger); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 0.7rem 1rem; border: 1px solid #ddd; border-radius: 8px;
+  font-size: 0.9rem; font-family: inherit; transition: var(--transition); background: var(--white);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+.form-group textarea { min-height: 80px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.7rem 1.4rem; border-radius: 8px; border: none;
+  font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition);
+  text-decoration: none; font-family: inherit;
+}
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+.btn-secondary { background: var(--white); color: var(--dark); border: 1px solid #e0e0e0; }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn-green { background: var(--trade-green); color: white; }
+.btn-green:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,95,42,0.4); }
+.tabs { display: flex; gap: 0.3rem; border-bottom: 2px solid #e0e0e0; margin-bottom: 1.5rem; }
+.tab {
+  padding: 0.6rem 1.2rem; background: none; border: none; font-size: 0.85rem;
+  font-weight: 700; color: var(--gray); cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.toast {
+  position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white;
+  padding: 14px 24px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 200;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.payment-method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.payment-method-card {
+  background: var(--white); border: 2px solid #e0e0e0; border-radius: var(--radius);
+  padding: 1.2rem; cursor: pointer; transition: var(--transition); text-align: center;
+}
+.payment-method-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.payment-method-card.selected { border-color: var(--primary); background: rgba(255,107,53,0.05); box-shadow: 0 4px 15px rgba(255,107,53,0.15); }
+.payment-method-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.payment-method-card h4 { font-size: 0.9rem; margin-bottom: 0.2rem; }
+.payment-method-card p { font-size: 0.75rem; color: var(--gray); }
+.badge {
+  font-size: 0.65rem; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.bdg-verified { background: #dcfce7; color: #166534; }
+.bdg-pending { background: #fef3c7; color: #92400e; }
+.bdg-danger { background: #fee2e2; color: #991b1b; }
+.bdg-gray { background: #e8e8e8; color: #555; }
+.order-summary { background: linear-gradient(135deg, var(--secondary), var(--dark)); color: white; border-radius: var(--radius); padding: 1.5rem; }
+.order-summary h3 { color: var(--primary-light); margin-bottom: 1rem; }
+.order-summary .row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+.order-summary .row.total { font-size: 1.1rem; font-weight: 700; border-bottom: none; margin-top: 0.5rem; color: var(--primary-light); }
+.info-box {
+  background: linear-gradient(135deg, rgba(15,52,96,0.05), rgba(255,107,53,0.05));
+  border-left: 4px solid var(--primary); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0;
+  margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--dark);
+}
+.info-box strong { color: var(--primary); }
+.info-box.green { border-left-color: var(--trade-green); background: linear-gradient(135deg, rgba(26,95,42,0.05), rgba(26,95,42,0.02)); }
+.info-box.green strong { color: var(--trade-green); }
+.info-box.privacy {
+  border-left-color: var(--secondary);
+  background: linear-gradient(135deg, rgba(15,52,96,0.08), rgba(15,52,96,0.02));
+}
+.info-box.privacy strong { color: var(--secondary); }
+.info-box.gold {
+  border-left-color: var(--trade-gold);
+  background: linear-gradient(135deg, rgba(201,162,39,0.08), rgba(201,162,39,0.02));
+}
+.info-box.gold strong { color: #8a6d0b; }
+.escrow-badge {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: linear-gradient(135deg, var(--trade-green), #2d8a3e);
+  color: white; padding: 0.4rem 1rem; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 700;
+}
+.shipping-line-mini {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.8rem;
+  margin: 1rem 0;
+}
+.slm-card {
+  background: #f8f9fa; border-radius: 8px; padding: 0.8rem;
+  border: 1px solid #e0e0e0; font-size: 0.8rem;
+}
+.slm-card b { color: var(--secondary); }
+.privacy-notice {
+  background: linear-gradient(135deg, rgba(15,52,96,0.06), rgba(255,107,53,0.04));
+  border: 1px dashed var(--secondary); border-radius: 8px;
+  padding: 1rem; font-size: 0.8rem; color: var(--gray); margin-bottom: 1rem;
+}
+.privacy-notice strong { color: var(--secondary); }
+.contract-banner {
+  background: linear-gradient(135deg, var(--trade-green), #2d8a3e);
+  color: white; border-radius: var(--radius); padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.contract-banner h3 {
+  font-size: 1.1rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.contract-banner ul {
+  list-style: none; padding: 0; margin: 0;
+}
+.contract-banner ul li {
+  padding: 0.4rem 0; padding-left: 1.5rem; position: relative;
+  font-size: 0.9rem; line-height: 1.5;
+}
+.contract-banner ul li::before {
+  content: "✓"; position: absolute; left: 0; color: #a3e6b0; font-weight: 700;
+}
+.contract-banner .highlight {
+  background: rgba(255,255,255,0.15); padding: 0.8rem 1rem; border-radius: 8px;
+  margin-top: 0.8rem; font-size: 0.85rem; line-height: 1.6;
+}
+.contract-banner .highlight strong { color: #ffd700; }
+.milestone-box {
+  background: #f8f9fa; border-radius: 8px; padding: 1rem;
+  border: 1px solid #e0e0e0; margin-bottom: 1rem;
+}
+.milestone-item {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 0.8rem 0; border-bottom: 1px solid #e8e8e8;
+}
+.milestone-item:last-child { border-bottom: none; }
+.milestone-number {
+  min-width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary); color: white; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+}
+.milestone-content { flex: 1; }
+.milestone-content b { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+.milestone-content span { font-size: 0.8rem; color: var(--gray); }
+.milestone-percent {
+  font-size: 1rem; font-weight: 700; color: var(--trade-green);
+}
+footer {
+  background: var(--dark); color: var(--white); padding: 3rem;
+  position: relative; z-index: 1; margin-top: 3rem;
+}
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+.footer-grid h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-grid a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.5rem; transition: var(--transition); }
+.footer-grid a:hover { color: var(--primary); padding-left: 5px; }
+.footer-grid p { color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+.copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.company-footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+.hidden { display: none !important; }
+@media (max-width: 900px) {
+  .topbar { flex-wrap: wrap; padding: 0.8rem 1rem; }
+  .topbar nav { order: 3; width: 100%; justify-content: center; margin-top: 0.5rem; gap: 0.3rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .payment-method-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .payment-method-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="index.html">NaijaSwap</a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="listings.html">Listings</a>
+    <a href="sell.html">Sell</a>
+    <a href="chat.html">Chat</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="payments.html" class="active">Payments</a>
+    <a href="delivery.html">Delivery</a>
+    <a href="profile.html">Profile</a>
+  </nav>
+  <div class="header-actions">
+    <button id="loginButton">Login</button>
+    <button id="profileButton" style="display:none">Profile</button>
+  </div>
+</header>
+
+<section class="section" style="padding-bottom:0;">
+  <div class="tabs">
+    <button class="tab active" id="tabLocal" onclick="switchTab('local')">Local Payment (Nigeria)</button>
+    <button class="tab" id="tabIntl" onclick="switchTab('intl')">International Payment (B2B)</button>
+  </div>
+</section>
+
+<!-- LOCAL PAYMENT SECTION -->
+<div id="localPaymentSection">
+  <section class="section">
+    <div class="section-title">Complete Your Local Purchase</div>
+    <div class="info-box">
+      <strong>Secure Local Checkout:</strong> Choose a payment method for your order. Sensitive card credentials are entered only through an authorised payment provider checkout when available.
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 320px; gap: 2rem;">
+      <div>
+        <div class="card">
+          <h3>Select Payment Method</h3>
+          <div class="payment-method-grid">
+            <div class="payment-method-card" onclick="selectLocalMethod('bank')" id="pm-bank">
+              <div class="icon">🏦</div>
+              <h4>Bank Transfer</h4>
+              <p>Verified instructions after order confirmation</p>
+            </div>
+            <div class="payment-method-card" onclick="selectLocalMethod('card')" id="pm-card">
+              <div class="icon">💳</div>
+              <h4>Debit / Credit Card</h4>
+              <p>Secure provider checkout</p>
+            </div>
+            <div class="payment-method-card" onclick="selectLocalMethod('ussd')" id="pm-ussd">
+              <div class="icon">📱</div>
+              <h4>USSD Code</h4>
+              <p>Dial code to pay instantly</p>
+            </div>
+            <div class="payment-method-card" onclick="selectLocalMethod('cod')" id="pm-cod">
+              <div class="icon">💵</div>
+              <h4>Cash on Delivery</h4>
+              <p>Pay when item arrives</p>
+            </div>
+          </div>
+
+          <!-- Bank Transfer Form -->
+          <div id="form-bank" class="hidden">
+            <div class="info-box green">
+              <strong>Bank Transfer Instructions:</strong> Transfer the exact amount to the NaijaSwap escrow account below. Use your Order ID as reference. Funds are held securely until you confirm delivery.
+            </div>
+            <div class="info-box privacy">
+              <strong>Bank transfer details:</strong> NaijaSwap will provide verified transfer instructions for the specific order after the buyer is authenticated and the trade details are confirmed. Do not send funds to bank details displayed on an unofficial page or message.
+            </div>
+            <div class="form-group">
+              <label>Payment Reference / Transaction ID <span class="req">*</span></label>
+              <input type="text" id="bankRef" placeholder="Enter your transfer reference number" required>
+            </div>
+            <button class="btn btn-primary" onclick="confirmLocalPayment('bank')" style="width:100%; justify-content:center;">I Have Made the Transfer</button>
+          </div>
+
+          <!-- Card Payment Form -->
+          <div id="form-card" class="hidden">
+            <div class="info-box green">
+              <strong>Secure Card Checkout:</strong> NaijaSwap does not collect or store card numbers, expiry dates, CVV codes, or other full card credentials in this website. When live payment processing is enabled, you will be redirected to the authorised payment provider checkout.
+            </div>
+            <div class="privacy-notice">
+              <strong>Why this matters:</strong> Payment credentials must be entered only in the secure checkout supplied by the licensed payment provider. This protects buyers and sellers and keeps sensitive card data away from the NaijaSwap website.
+            </div>
+            <button class="btn btn-primary" type="button" onclick="showToast('Secure card checkout will open here once the payment gateway is connected.');" style="width:100%; justify-content:center;">Continue to Secure Checkout</button>
+          </div>
+
+          <!-- USSD Form -->
+          <div id="form-ussd" class="hidden">
+            <div class="info-box green">
+              <strong>USSD Payment:</strong> Dial the code below on your registered mobile number to complete payment instantly.
+            </div>
+            <div class="form-group">
+              <label>Select Your Bank</label>
+              <select id="ussdBank" onchange="generateUSSD()">
+                <option value="">Select bank</option>
+                <option value="">GTBank</option><option value="">First Bank</option><option value="">Zenith Bank</option>
+                <option value="">Access Bank</option><option value="">Sterling Bank</option><option value="">EcoBank</option><option value="">UBA</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>USSD Code to Dial</label>
+              <input type="text" id="ussdCode" readonly placeholder="Select bank to generate code">
+            </div>
+            <div class="form-group">
+              <label>Amount (NGN)</label>
+              <input type="text" id="ussdAmount" value="₦45,000.00" readonly>
+            </div>
+            <button class="btn btn-primary" onclick="confirmLocalPayment('ussd')" style="width:100%; justify-content:center;">Confirm USSD Payment</button>
+          </div>
+
+          <!-- COD Form -->
+          <div id="form-cod" class="hidden">
+            <div class="info-box green">
+              <strong>Cash on Delivery:</strong> Pay the delivery agent in cash or via bank transfer when your item arrives. A small COD fee may apply.
+            </div>
+            <div class="form-group">
+              <label>Delivery Address <span class="req">*</span></label>
+              <textarea id="codAddress" placeholder="Full delivery address including landmarks"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Contact Phone <span class="req">*</span></label>
+                <input type="tel" id="codPhone" placeholder="08012345678">
+              </div>
+              <div class="form-group">
+                <label>Preferred Delivery Time</label>
+                <select id="codTime">
+                  <option>Anytime</option>
+                  <option>Morning (9am - 12pm)</option>
+                  <option>Afternoon (12pm - 4pm)</option>
+                  <option>Evening (4pm - 7pm)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Amount Due on Delivery (NGN)</label>
+              <input type="text" id="codAmount" value="₦45,000.00" readonly>
+            </div>
+            <button class="btn btn-primary" onclick="confirmLocalPayment('cod')" style="width:100%; justify-content:center;">Confirm Cash on Delivery</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div class="row"><span>Item:</span><span id="summaryItem">iPhone 15 Pro Max</span></div>
+          <div class="row"><span>Price:</span><span id="summaryPrice">₦42,000.00</span></div>
+          <div class="row"><span>Delivery:</span><span id="summaryDelivery">₦2,500.00</span></div>
+          <div class="row"><span>Escrow Fee:</span><span id="summaryFee">₦500.00</span></div>
+          <div class="row total"><span>Total:</span><span id="summaryTotal">₦45,000.00</span></div>
+        </div>
+        <div style="margin-top:1rem; text-align:center;">
+          <span class="escrow-badge">🔒 Escrow Protected</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- INTERNATIONAL PAYMENT SECTION -->
+<div id="intlPaymentSection" class="hidden">
+  <section class="section">
+    <div class="section-title">Complete Your International B2B Payment</div>
+
+    <!-- NIGERIAN EXPORT PAYMENT STRUCTURE — FRONT AND CENTER -->
+    <div class="contract-banner">
+      <h3>📋 Standard Nigerian Export Payment Terms</h3>
+      <ul>
+        <li><strong>70–80% paid against B/L Copy</strong> — The bulk of payment is released only when the seller provides a copy of the Bill of Lading (proof of shipment). No large advance payment required.</li>
+        <li><strong>20–30% final payment on arrival & inspection</strong> — The balance is held in escrow and released only after goods arrive at destination and the buyer confirms quality and quantity through inspection.</li>
+        <li>These terms are stated in the sales contract from day one and apply to all B2B export transactions on NaijaSwap.</li>
+      </ul>
+      <div class="highlight">
+        <strong>Why this matters:</strong> This is the industry-standard payment structure for Nigerian commodity exports. It protects both buyer and seller — the seller ships with confidence knowing payment is secured against B/L, while the buyer retains a holdback to ensure goods match specifications on arrival. NaijaSwap escrow enforces these terms automatically.
+      </div>
+    </div>
+
+    <div class="info-box gold">
+      <strong>International B2B Checkout:</strong> Secure cross-border payments for bulk commodity and export transactions. All buyer information is kept confidential and only shared with the seller after both parties agree to proceed via NaijaSwap escrow.
+    </div>
+
+    <!-- PRIVACY NOTICE -->
+    <div class="privacy-notice">
+      <strong>🔒 Buyer Privacy Protected:</strong> Your company name, contact details, and identity are never exposed to sellers during the payment process. Only NaijaSwap's trade desk handles buyer-seller introductions. Full contact exchange happens only after escrow is funded and both parties have signed the sales contract.
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 320px; gap: 2rem;">
+      <div>
+        <div class="card">
+          <h3>Select International Payment Method</h3>
+          <div class="payment-method-grid">
+            <div class="payment-method-card" onclick="selectIntlMethod('wire')" id="pm-wire">
+              <div class="icon">🏦</div>
+              <h4>Wire Transfer (TT)</h4>
+              <p>Bank-to-bank SWIFT</p>
+            </div>
+            <div class="payment-method-card" onclick="selectIntlMethod('lc')" id="pm-lc">
+              <div class="icon">📜</div>
+              <h4>Letter of Credit</h4>
+              <p>LC via nominated bank</p>
+            </div>
+            <div class="payment-method-card" onclick="selectIntlMethod('escrow')" id="pm-escrow">
+              <div class="icon">🔒</div>
+              <h4>NaijaSwap Escrow</h4>
+              <p>B/L-based milestone release</p>
+            </div>
+            <div class="payment-method-card" onclick="selectIntlMethod('cardintl')" id="pm-cardintl">
+              <div class="icon">💳</div>
+              <h4>International Card</h4>
+              <p>Visa, Mastercard, Amex</p>
+            </div>
+          </div>
+
+          <!-- Wire Transfer Form -->
+          <div id="form-wire" class="hidden">
+            <div class="info-box green">
+              <strong>Wire Transfer (TT):</strong> Send payment via SWIFT to our domiciliary account. Payment is structured per Nigerian export standard: <strong>70–80% against B/L copy, 20–30% on arrival & inspection</strong>. Upload proof of transfer for faster processing.
+            </div>
+            <div class="info-box privacy">
+              <strong>Verified bank details:</strong> NaijaSwap will provide the verified beneficiary details for the specific transaction after the buyer is authenticated and the trade contract is confirmed. This prevents outdated or unauthorised payment instructions from being used.
+            </div>
+            <div class="form-group">
+              <label>Amount (USD) <span class="req">*</span></label>
+              <input type="number" id="wireAmount" placeholder="e.g. 5000" min="100">
+            </div>
+            <div class="form-group">
+              <label>Payment Structure</label>
+              <div class="milestone-box">
+                <div class="milestone-item">
+                  <div class="milestone-number">1</div>
+                  <div class="milestone-content">
+                    <b>Against B/L Copy</b>
+                    <span>70–80% released upon presentation of Bill of Lading copy</span>
+                  </div>
+                  <div class="milestone-percent">70–80%</div>
+                </div>
+                <div class="milestone-item">
+                  <div class="milestone-number">2</div>
+                  <div class="milestone-content">
+                    <b>Arrival & Inspection</b>
+                    <span>20–30% released after goods arrive and buyer confirms inspection</span>
+                  </div>
+                  <div class="milestone-percent">20–30%</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Upload Proof of Transfer (optional)</label>
+              <input type="file" id="wireProof" accept="image/*,.pdf">
+            </div>
+            <div class="form-group">
+              <label>Transaction Reference <span class="req">*</span></label>
+              <input type="text" id="wireRef" placeholder="SWIFT reference or MT103 number">
+            </div>
+            <button class="btn btn-green" onclick="confirmIntlPayment('wire')" style="width:100%; justify-content:center;">Confirm Wire Transfer</button>
+          </div>
+
+          <!-- Letter of Credit Form -->
+          <div id="form-lc" class="hidden">
+            <div class="info-box green">
+              <strong>Letter of Credit (LC):</strong> Your bank issues an LC in our favour. Payment follows Nigerian export standard: <strong>70–80% at sight against B/L copy, 20–30% on arrival & inspection</strong>. Goods are shipped only after LC confirmation. Recommended for transactions above $10,000.
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>LC Type <span class="req">*</span></label>
+                <select id="lcType">
+                  <option value="">Select LC type</option>
+                  <option>Irrevocable LC at Sight</option>
+                  <option>Usance LC (60/90 days)</option>
+                  <option>Confirmed LC</option>
+                  <option>Transferable LC</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Issuing Bank <span class="req">*</span></label>
+                <input type="text" id="lcBank" placeholder="Name of your bank">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>LC Amount (USD) <span class="req">*</span></label>
+                <input type="number" id="lcAmount" placeholder="e.g. 25000" min="1000">
+              </div>
+              <div class="form-group">
+                <label>Shipment Terms (Incoterm)</label>
+                <select id="lcIncoterm">
+                  <option>FOB</option>
+                  <option>CIF</option>
+                  <option>CFR</option>
+                  <option>DDP</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>LC Payment Terms (Nigerian Export Standard)</label>
+              <div class="milestone-box">
+                <div class="milestone-item">
+                  <div class="milestone-number">1</div>
+                  <div class="milestone-content">
+                    <b>At Sight Against B/L Copy</b>
+                    <span>70–80% payable upon presentation of compliant documents including B/L</span>
+                  </div>
+                  <div class="milestone-percent">70–80%</div>
+                </div>
+                <div class="milestone-item">
+                  <div class="milestone-number">2</div>
+                  <div class="milestone-content">
+                    <b>On Arrival & Inspection</b>
+                    <span>20–30% released after buyer inspection at destination port</span>
+                  </div>
+                  <div class="milestone-percent">20–30%</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Required Documents</label>
+              <div style="font-size:0.85rem; color:var(--gray); line-height:1.8;">
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" checked disabled> Commercial Invoice
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" checked disabled> Packing List
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" checked disabled> Bill of Lading (B/L)
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" id="lcCertOrigin"> Certificate of Origin
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" id="lcCertQuality"> Quality / SGS Certificate
+                </label>
+                <label style="display:flex; align-items:center; gap:0.5rem; font-weight:400; cursor:pointer;">
+                  <input type="checkbox" id="lcInsurance"> Insurance Certificate
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Additional Notes</label>
+              <textarea id="lcNotes" placeholder="Any special LC terms or requirements"></textarea>
+            </div>
+            <button class="btn btn-green" onclick="confirmIntlPayment('lc')" style="width:100%; justify-content:center;">Request LC Arrangement</button>
+          </div>
+
+          <!-- Escrow Form -->
+          <div id="form-escrow" class="hidden">
+            <div class="info-box green">
+              <strong>NaijaSwap Escrow:</strong> Funds are held securely and released in milestones based on the standard Nigerian export payment structure. Buyer identity remains protected until both parties confirm the transaction.
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Escrow Amount (USD) <span class="req">*</span></label>
+                <input type="number" id="escrowAmount" placeholder="e.g. 15000" min="500">
+              </div>
+              <div class="form-group">
+                <label>Transaction Currency</label>
+                <select id="escrowCurrency">
+                  <option>USD</option>
+                  <option>EUR</option>
+                  <option>GBP</option>
+                  <option>NGN</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Milestone Release Schedule — Nigerian Export Standard</label>
+              <div class="milestone-box">
+                <div class="milestone-item">
+                  <div class="milestone-number">1</div>
+                  <div class="milestone-content">
+                    <b>Contract Signing & Commitment</b>
+                    <span>Optional 0–10% deposit to lock in the order and begin documentation</span>
+                  </div>
+                  <div class="milestone-percent">0–10%</div>
+                </div>
+                <div class="milestone-item">
+                  <div class="milestone-number">2</div>
+                  <div class="milestone-content">
+                    <b>Against B/L Copy</b>
+                    <span>70–80% released when seller uploads copy of Bill of Lading (proof of shipment)</span>
+                  </div>
+                  <div class="milestone-percent">70–80%</div>
+                </div>
+                <div class="milestone-item">
+                  <div class="milestone-number">3</div>
+                  <div class="milestone-content">
+                    <b>Arrival & Inspection</b>
+                    <span>20–30% released after goods arrive at destination and buyer confirms inspection</span>
+                  </div>
+                  <div class="milestone-percent">20–30%</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Inspection Period (days after arrival)</label>
+              <select id="escrowInspection">
+                <option>7 days</option>
+                <option>14 days</option>
+                <option>21 days</option>
+                <option>30 days</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Escrow Fee (1.5%)</label>
+              <input type="text" id="escrowFee" readonly value="Calculated on confirmation">
+            </div>
+            <div class="privacy-notice">
+              <strong>Privacy Note:</strong> Your company identity is hidden from the seller during escrow setup. Only NaijaSwap's trade desk coordinates between both parties. Full disclosure happens only after the contract is signed and the first milestone is funded.
+            </div>
+            <button class="btn btn-green" onclick="confirmIntlPayment('escrow')" style="width:100%; justify-content:center;">Initiate Escrow</button>
+          </div>
+
+          <!-- International Card Form -->
+          <div id="form-cardintl" class="hidden">
+            <div class="info-box green">
+              <strong>Secure International Card Checkout:</strong> NaijaSwap does not collect or store card numbers, expiry dates, CVV codes, or full card credentials. When the payment gateway is connected, the buyer will enter payment details only on the authorised provider's secure checkout.
+            </div>
+            <div class="milestone-box">
+              <div class="milestone-item">
+                <div class="milestone-number">1</div>
+                <div class="milestone-content"><b>Trade confirmation</b><span>Confirm product, quantity, price, Incoterm and payment milestone.</span></div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-number">2</div>
+                <div class="milestone-content"><b>Secure provider checkout</b><span>Payment credentials are entered only on the authorised payment provider's checkout.</span></div>
+              </div>
+              <div class="milestone-item">
+                <div class="milestone-number">3</div>
+                <div class="milestone-content"><b>Trade desk confirmation</b><span>NaijaSwap records the payment status and continues the agreed milestone workflow.</span></div>
+              </div>
+            </div>
+            <div class="privacy-notice">
+              <strong>Buyer protection:</strong> Never send your card number, expiry date or CVV to a seller, NaijaSwap staff member, email address or chat message.
+            </div>
+            <button class="btn btn-green" type="button" onclick="showToast('Secure international checkout will open here once the authorised payment gateway is connected.');" style="width:100%; justify-content:center;">Continue to Secure Checkout</button>
+          </div>
+        </div>
+
+        <!-- SHIPPING LINES INFO -->
+        <div class="card">
+          <h3>Partner Shipping Lines for This Order</h3>
+          <p style="margin-bottom:1rem; font-size:0.85rem; color:var(--gray);">Your seller can arrange shipping through any of these verified partners. Shipping costs are typically borne by the buyer (under CIF/CFR) or seller (under FOB/EXW) depending on the agreed Incoterm.</p>
+          <div class="shipping-line-mini">
+            <div class="slm-card"><b>Maersk Line</b><br>Container | 14-21 days to Europe</div>
+            <div class="slm-card"><b>MSC</b><br>Container | 12-18 days to Europe</div>
+            <div class="slm-card"><b>CMA CGM</b><br>Reefer available | 15-22 days</div>
+            <div class="slm-card"><b>Grimaldi</b><br>RoRo + Container | 18-25 days</div>
+            <div class="slm-card"><b>DHL Air</b><br>Air freight | 3-7 days worldwide</div>
+            <div class="slm-card"><b>PIL</b><br>Asia routes | 25-35 days</div>
+          </div>
+          <p style="font-size:0.8rem; color:var(--gray);">Shipping line selection is coordinated by NaijaSwap's trade desk after payment confirmation. The seller cannot see your preferred shipping details until the escrow is funded.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary">
+          <h3>B2B Order Summary</h3>
+          <div class="row"><span>Product:</span><span>Raw Cashew Nuts</span></div>
+          <div class="row"><span>Quantity:</span><span>20 MT</span></div>
+          <div class="row"><span>Unit Price:</span><span>$1,200 / MT</span></div>
+          <div class="row"><span>Subtotal:</span><span>$24,000.00</span></div>
+          <div class="row"><span>Shipping:</span><span>$2,500.00</span></div>
+          <div class="row"><span>Escrow Fee (1.5%):</span><span>$360.00</span></div>
+          <div class="row total"><span>Total:</span><span>$26,860.00</span></div>
+        </div>
+        <div style="margin-top:1rem; text-align:center;">
+          <span class="escrow-badge">🔒 Escrow Protected</span>
+        </div>
+        <div style="margin-top:1rem; font-size:0.8rem; color:var(--gray); text-align:center;">
+          Exchange rate: 1 USD = ₦1,550 (approx.)<br>
+          Rates may vary at time of settlement
+        </div>
+        <div style="margin-top:1rem; padding:1rem; background:#f8f9fa; border-radius:8px; font-size:0.8rem; color:var(--gray);">
+          <strong style="color:var(--secondary);">Buyer Protection:</strong><br>
+          Your identity is protected until both parties sign the sales contract. NaijaSwap acts as the intermediary throughout the transaction.
+        </div>
+        <div style="margin-top:1rem; padding:1rem; background:linear-gradient(135deg, rgba(26,95,42,0.08), rgba(26,95,42,0.02)); border-radius:8px; font-size:0.8rem; color:var(--dark); border:1px solid rgba(26,95,42,0.15);">
+          <strong style="color:var(--trade-green);">Payment Structure:</strong><br>
+          70–80% against B/L copy<br>
+          20–30% on arrival & inspection<br><br>
+          <span style="color:var(--gray);">Stated in contract from day one. No large advance payment.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3>NaijaSwap</h3>
+      <p>A global marketplace connecting buyers and sellers securely worldwide.</p>
+      <p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p>
+    </div>
+    <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div>
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p>
+      <p>Available Worldwide - 45+ Countries</p>
+    </div>
+  </div>
+  <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd - Registered Company - Secure Escrow Payments - Verified Sellers - Global Shipping</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://your-project.supabase.co';
+const SUPABASE_KEY = 'your-anon-key';
+
+let selectedLocalMethod = null;
+let selectedIntlMethod = null;
+
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
+  return null;
+}
+
+function initAuth() {
+  const currentUser = getCurrentUser();
+  const loginBtn = document.getElementById('loginButton');
+  const profileBtn = document.getElementById('profileButton');
+  if (currentUser) {
+    loginBtn.textContent = 'Logout';
+    loginBtn.onclick = () => { localStorage.removeItem('naijaswap_user'); window.location.reload(); };
+    profileBtn.style.display = 'inline-block';
+    profileBtn.textContent = (currentUser.displayName || currentUser.email || 'Profile').split(' ')[0];
+    profileBtn.onclick = () => window.location.href = 'profile.html';
+  } else {
+    loginBtn.textContent = 'Login';
+    loginBtn.onclick = () => window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+    profileBtn.style.display = 'none';
+  }
+}
+
+function switchTab(tab) {
+  const localSection = document.getElementById('localPaymentSection');
+  const intlSection = document.getElementById('intlPaymentSection');
+  const tabLocal = document.getElementById('tabLocal');
+  const tabIntl = document.getElementById('tabIntl');
+
+  if (tab === 'intl') {
+    localSection.classList.add('hidden');
+    intlSection.classList.remove('hidden');
+    tabLocal.classList.remove('active');
+    tabIntl.classList.add('active');
+  } else {
+    localSection.classList.remove('hidden');
+    intlSection.classList.add('hidden');
+    tabLocal.classList.add('active');
+    tabIntl.classList.remove('active');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function selectLocalMethod(method) {
+  selectedLocalMethod = method;
+  document.querySelectorAll('#localPaymentSection .payment-method-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pm-' + method).classList.add('selected');
+  ['bank', 'card', 'ussd', 'cod'].forEach(m => {
+    document.getElementById('form-' + m).classList.add('hidden');
+  });
+  document.getElementById('form-' + method).classList.remove('hidden');
+}
+
+function selectIntlMethod(method) {
+  selectedIntlMethod = method;
+  document.querySelectorAll('#intlPaymentSection .payment-method-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pm-' + method).classList.add('selected');
+  ['wire', 'lc', 'escrow', 'cardintl'].forEach(m => {
+    document.getElementById('form-' + m).classList.add('hidden');
+  });
+  document.getElementById('form-' + method).classList.remove('hidden');
+}
+
+function generateUSSD() {
+  const select = document.getElementById('ussdBank');
+  const code = select.value;
+  document.getElementById('ussdCode').value = code || 'USSD instructions will be supplied securely after order confirmation';
+}
+
+function confirmLocalPayment(method) {
+  const user = getCurrentUser();
+  if (!user) { showToast('Please login to complete payment'); setTimeout(() => window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href), 1500); return; }
+  showToast('Payment submitted! Awaiting confirmation.');
+}
+
+function confirmIntlPayment(method) {
+  const user = getCurrentUser();
+  if (!user) { showToast('Please login to complete payment'); setTimeout(() => window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href), 1500); return; }
+  showToast('International payment request submitted! Our trade desk will contact you within 24 hours.');
+}
+
+function detectTransactionType() {
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type');
+  if (type === 'b2b' || type === 'intl') {
+    switchTab('intl');
+  }
+}
+
+initAuth();
+detectTransactionType();
+</script>
+</body>
+</html>

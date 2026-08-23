@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NijaSwap Safety Tips - Stay safe while buying and selling online with our comprehensive safety guidelines.">
+<title>Safety Tips — NijaSwap</title>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --success: #28a745; --danger: #dc3545; --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%; animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; line-height: 1.6;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+}
+.topbar {
+  position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 2rem; background: rgba(26,26,46,0.95); backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--primary); box-shadow: var(--shadow);
+}
+.logo a { font-size: 1.5rem; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+.logo span { background: linear-gradient(90deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.topbar nav { display: flex; gap: 1.2rem; }
+.topbar nav a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; font-size: 0.9rem; padding: 0.4rem 0.7rem; border-radius: 8px; transition: var(--transition); }
+.topbar nav a:hover, .topbar nav a.active { color: var(--primary); background: rgba(255,107,53,0.1); }
+.header-actions { display: flex; align-items: center; gap: 0.8rem; }
+.header-actions button { padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: var(--white); font-size: 0.9rem; cursor: pointer; transition: var(--transition); }
+.header-actions button:hover { background: var(--primary); border-color: var(--primary); }
+#loginButton { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; position: relative; z-index: 1; }
+.page-header { text-align: center; margin-bottom: 3rem; }
+.page-header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--gray); font-size: 1.1rem; }
+
+.safety-banner {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7); border: 2px solid #ffc107;
+  border-radius: var(--radius); padding: 1.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
+}
+.safety-banner .icon { font-size: 2.5rem; }
+.safety-banner h3 { color: #856404; margin-bottom: 0.3rem; }
+.safety-banner p { color: #856404; margin: 0; }
+
+.tip-section { margin-bottom: 3rem; }
+.tip-section h2 { font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.tip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.tip-card {
+  background: var(--white); border-radius: var(--radius); padding: 1.8rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: var(--transition);
+}
+.tip-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+.tip-card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.tip-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--secondary); }
+.tip-card p { color: var(--gray); font-size: 0.95rem; line-height: 1.7; }
+.tip-card ul { margin: 0.5rem 0 0 1.2rem; color: var(--gray); font-size: 0.9rem; }
+.tip-card li { margin-bottom: 0.3rem; }
+
+.red-flags {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb); border: 2px solid #dc3545;
+  border-radius: var(--radius); padding: 2rem; margin: 3rem 0;
+}
+.red-flags h2 { color: #721c24; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.red-flags ul { margin-left: 1.5rem; color: #721c24; }
+.red-flags li { margin-bottom: 0.8rem; font-size: 1rem; }
+
+.report-section {
+  background: linear-gradient(135deg, var(--dark), #2d2d4a); border-radius: var(--radius);
+  padding: 3rem; text-align: center; color: var(--white); margin-top: 3rem;
+}
+.report-section h2 { margin-bottom: 1rem; }
+.report-section p { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+.report-section a {
+  display: inline-block; padding: 1rem 2.5rem; background: var(--primary); color: white;
+  border-radius: 50px; text-decoration: none; font-weight: 700; transition: var(--transition);
+}
+.report-section a:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,107,53,0.5); }
+
+footer {
+  background: var(--dark); color: var(--white); padding: 3rem; position: relative; z-index: 1; margin-top: 3rem;
+}
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+.footer-grid h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.1rem; }
+.footer-grid a { display: block; color: rgba(255,255,255,0.7); text-decoration: none; margin-bottom: 0.5rem; transition: var(--transition); }
+.footer-grid a:hover { color: var(--primary); padding-left: 5px; }
+.footer-grid p { color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; }
+.copyright { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.company-footer { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+@media (max-width: 768px) {
+  .topbar { flex-wrap: wrap; padding: 0.8rem 1rem; }
+  .topbar nav { order: 3; width: 100%; justify-content: center; margin-top: 0.5rem; gap: 0.5rem; }
+  .page-header h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo"><a href="index.html">🔥 <span>NijaSwap</span></a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="listings.html">Listings</a>
+    <a href="sell.html">Sell</a>
+    <a href="chat.html">Chat</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="payments.html">Payments</a>
+    <a href="delivery.html">Delivery</a>
+    <a href="profile.html">Profile</a>
+  </nav>
+  <div class="header-actions">
+    <button id="loginButton">Login</button>
+    <button id="profileButton" style="display:none">Profile</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="page-header">
+    <h1>🛡️ Safety Tips</h1>
+    <p>Your safety is our top priority. Follow these guidelines to stay protected while buying and selling on NijaSwap.</p>
+  </div>
+
+  <div class="safety-banner">
+    <div class="icon">🔒</div>
+    <div>
+      <h3>Escrow Protection Active</h3>
+      <p>All transactions on NijaSwap are protected by our secure escrow system. Never send money outside the platform.</p>
+    </div>
+  </div>
+
+  <div class="tip-section">
+    <h2>🛒 For Buyers</h2>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="icon">✅</div>
+        <h3>Verify the Seller</h3>
+        <p>Always check the seller's profile, ratings, and verification status before making a purchase. Look for the "Verified Seller" badge.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">💳</div>
+        <h3>Use Escrow Payments</h3>
+        <p>Never pay outside NijaSwap. Our escrow holds your payment until you confirm receipt of the item. This is your strongest protection.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">📸</div>
+        <h3>Request More Photos</h3>
+        <p>Ask the seller for additional photos or a video of the item. Scammers often use stock images or photos from other listings.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">💬</div>
+        <h3>Chat Before Buying</h3>
+        <p>Use our in-app chat to communicate with the seller. Keep all conversations on the platform for your protection.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">🚚</div>
+        <h3>Track Your Delivery</h3>
+        <p>Always use tracked shipping. Request a tracking number and monitor your delivery on the <a href="delivery.html">Delivery</a> page.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">⭐</div>
+        <h3>Leave Reviews</h3>
+        <p>After receiving your item, leave an honest review. This helps other buyers make informed decisions and holds sellers accountable.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-section">
+    <h2>📦 For Sellers</h2>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="icon">📋</div>
+        <h3>Provide Accurate Descriptions</h3>
+        <p>Be honest about the condition of your item. Include clear photos from multiple angles and mention any defects or wear.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">📦</div>
+        <h3>Package Items Securely</h3>
+        <p>Use appropriate packaging to prevent damage during shipping. Consider insurance for high-value items.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">📤</div>
+        <h3>Ship Promptly</h3>
+        <p>Ship items within 48 hours of receiving payment. Update the tracking information immediately on the platform.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">🤝</div>
+        <h3>Be Responsive</h3>
+        <p>Reply to buyer messages within 24 hours. Good communication builds trust and leads to positive reviews.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">🏦</div>
+        <h3>Verify Your Bank Details</h3>
+        <p>Ensure your bank account details in your <a href="wallet.html">Wallet</a> are correct to avoid payment delays.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">⚠️</div>
+        <h3>Report Suspicious Buyers</h3>
+        <p>If a buyer asks you to communicate outside the app or requests unusual payment methods, report them immediately.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="red-flags">
+    <h2>🚩 Red Flags — Report Immediately</h2>
+    <ul>
+      <li><strong>Off-platform payments:</strong> Anyone asking you to pay via WhatsApp, direct bank transfer, or cash before delivery.</li>
+      <li><strong>Too-good-to-be-true prices:</strong> An iPhone 15 Pro for ₦50,000 is a scam. Always verify market prices.</li>
+      <li><strong>Urgency pressure:</strong> Sellers or buyers creating false urgency ("Only 1 left! Pay now or lose it!").</li>
+      <li><strong>Requests for personal info:</strong> Never share your BVN, PIN, OTP, or password with anyone on the platform.</li>
+      <li><strong>Shipping to unusual addresses:</strong> Be cautious of buyers requesting delivery to P.O. boxes or third-party addresses without verification.</li>
+      <li><strong>No profile photo or history:</strong> New accounts with no reviews, no listings, and no verification should be treated with caution.</li>
+      <li><strong>Overpayment scams:</strong> A buyer "accidentally" overpays and asks for a refund of the difference. This is a classic scam.</li>
+    </ul>
+  </div>
+
+  <div class="tip-section">
+    <h2>🔐 General Security</h2>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="icon">🔑</div>
+        <h3>Use a Strong Password</h3>
+        <p>Use a unique password with at least 12 characters including letters, numbers, and symbols. Never reuse passwords from other sites.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">📱</div>
+        <h3>Enable Two-Factor Authentication</h3>
+        <p>Add an extra layer of security to your account. Go to your <a href="profile.html">Profile</a> settings to enable 2FA.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">🌐</div>
+        <h3>Check the URL</h3>
+        <p>Always ensure you are on <strong>naijaswap-new.firebaseapp.com</strong> or our official domain. Beware of phishing sites.</p>
+      </div>
+      <div class="tip-card">
+        <div class="icon">🔄</div>
+        <h3>Keep Your App Updated</h3>
+        <p>Always use the latest version of NijaSwap to benefit from the latest security patches and features.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <h2>⚠️ Encountered a Problem?</h2>
+    <p>If you suspect fraud, harassment, or any suspicious activity, report it immediately. Our team investigates every report within 24 hours.</p>
+    <a href="mailto:support@radiantwaves.media?subject=Safety%20Report%20-%20NijaSwap">Report an Issue</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h3>NijaSwap</h3>
+      <p>A global marketplace connecting buyers and sellers securely worldwide.</p>
+      <p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p>
+    </div>
+    <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div>
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:support@radiantwaves.media" style="display:inline;color:var(--primary-light);">support@radiantwaves.media</a></p>
+      <p>Available Worldwide • 45+ Countries</p>
+    </div>
+  </div>
+  <div class="copyright">© 2026 NijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd - Registered Company • Secure Escrow Payments • Verified Sellers • Global Shipping</div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALZ3W_u3i7udUybCtX00T1h7ZejQuCAiI",
+  authDomain: "naijaswap-new.firebaseapp.com",
+  projectId: "naijaswap-new",
+  storageBucket: "naijaswap-new.firebasestorage.app",
+  messagingSenderId: "138315357891",
+  appId: "1:138315357891:web:83fecc932654a8cb740c76"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const loginBtn = document.getElementById('loginButton');
+const profileBtn = document.getElementById('profileButton');
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginBtn.textContent = 'Logout';
+    loginBtn.onclick = () => { signOut(auth).then(() => window.location.reload()); };
+    profileBtn.style.display = 'inline-block';
+    profileBtn.textContent = (user.displayName || user.email || 'Profile').split(' ')[0];
+    profileBtn.onclick = () => window.location.href = 'profile.html';
+  } else {
+    loginBtn.textContent = 'Login';
+    loginBtn.onclick = () => window.location.href = 'login.html';
+    profileBtn.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>

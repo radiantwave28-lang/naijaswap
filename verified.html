@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verification Status | NijaSwap</title>
+<style>
+:root {
+  --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
+  --secondary: #0f3460; --dark: #1a1a2e; --light: #f5f7fa;
+  --success: #28a745; --danger: #dc3545; --white: #ffffff; --gray: #6c757d;
+  --shadow: 0 4px 20px rgba(0,0,0,0.15); --radius: 12px; --transition: all 0.3s ease;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8f66 25%, #f5f7fa 55%, #ffffff 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: var(--dark); min-height: 100vh; display: flex; align-items: center; justify-content: center;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.card {
+  background: var(--white); border-radius: var(--radius); padding: 3rem;
+  box-shadow: var(--shadow); text-align: center; max-width: 500px; width: 90%;
+}
+.status-icon {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--success), #1e7e34);
+  color: var(--white); font-size: 2.5rem; display: flex;
+  align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+.status-icon.pending {
+  background: linear-gradient(135deg, #f5a623, #d48c0c);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(245,166,35,0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(245,166,35,0); }
+  100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); }
+}
+.card h1 { font-size: 1.8rem; color: var(--dark); margin-bottom: 0.5rem; }
+.card p { color: var(--gray); margin-bottom: 1.5rem; }
+.badge {
+  display: inline-block; padding: 0.5rem 1.5rem; border-radius: 20px;
+  font-weight: 600; font-size: 0.9rem; margin-bottom: 1.5rem;
+}
+.badge-success { background: rgba(40,167,69,0.1); color: var(--success); }
+.badge-pending { background: rgba(245,166,35,0.1); color: #d48c0c; }
+.btn {
+  display: inline-block; padding: 0.9rem 2rem; border-radius: var(--radius);
+  font-weight: 600; font-size: 1rem; text-decoration: none; transition: var(--transition);
+  border: none; cursor: pointer; margin: 0.3rem;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white); box-shadow: 0 4px 20px rgba(255,107,53,0.35);
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,107,53,0.5); }
+.btn-secondary {
+  background: var(--white); color: var(--primary); border: 2px solid var(--primary);
+}
+.btn-secondary:hover { background: var(--primary); color: var(--white); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="status-icon pending" id="statusIcon">⏳</div>
+  <h1 id="statusTitle">Verification Pending</h1>
+  <p id="statusText">Your seller verification is under review. We will notify you once approved.</p>
+  <div class="badge badge-pending" id="statusBadge">Pending Review</div>
+  <div>
+    <a href="index.html" class="btn btn-primary">🏠 Back to Home</a>
+    <a href="sell.html" class="btn btn-secondary">📦 Post Listing</a>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALZ3W_u3i7udUybCtX00T1h7ZejQuCAiI",
+  authDomain: "naijaswap-new.firebaseapp.com",
+  databaseURL: "https://naijaswap-new-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "naijaswap-new",
+  storageBucket: "naijaswap-new.firebasestorage.app",
+  messagingSenderId: "138315357891",
+  appId: "1:138315357891:web:83fecc932654a8cb740c76",
+  measurementId: "G-SQ2P17NWTZ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+  try {
+    const docSnap = await getDoc(doc(db, "verifications", user.uid));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.status === 'approved') {
+        document.getElementById('statusIcon').textContent = '✓';
+        document.getElementById('statusIcon').classList.remove('pending');
+        document.getElementById('statusTitle').textContent = 'Verified Seller!';
+        document.getElementById('statusText').textContent = 'Congratulations! You are now a verified seller on NijaSwap.';
+        document.getElementById('statusBadge').textContent = 'Verified';
+        document.getElementById('statusBadge').className = 'badge badge-success';
+      }
+    }
+  } catch (e) { console.error(e); }
+});
+</script>
+
+</body>
+</html>
