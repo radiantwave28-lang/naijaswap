@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verification Status | NijaSwap</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
@@ -81,43 +82,48 @@ body {
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+<script>
+const SUPABASE_URL = 'https://kysnaeklegcazdwfgxysy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5c25hZWtsZWdjYXpkd2ZneHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjI4MjksImV4cCI6MjA5OTA5ODgyOX0.SQiVyeqQs9lcwree7QRjLqW0Pmbrz2Tq_2MEtwvutsk';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyALZ3W_u3i7udUybCtX00T1h7ZejQuCAiI",
-  authDomain: "naijaswap-new.firebaseapp.com",
-  databaseURL: "https://naijaswap-new-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "naijaswap-new",
-  storageBucket: "naijaswap-new.firebasestorage.app",
-  messagingSenderId: "138315357891",
-  appId: "1:138315357891:web:83fecc932654a8cb740c76",
-  measurementId: "G-SQ2P17NWTZ"
-};
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) {
+    try { return JSON.parse(userData); } catch (e) { return null; }
+  }
+  return null;
+}
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-onAuthStateChanged(auth, async (user) => {
+(async () => {
+  const user = getCurrentUser();
   if (!user) return;
+
   try {
-    const docSnap = await getDoc(doc(db, "verifications", user.uid));
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (data.status === 'approved') {
-        document.getElementById('statusIcon').textContent = '✓';
-        document.getElementById('statusIcon').classList.remove('pending');
-        document.getElementById('statusTitle').textContent = 'Verified Seller!';
-        document.getElementById('statusText').textContent = 'Congratulations! You are now a verified seller on NijaSwap.';
-        document.getElementById('statusBadge').textContent = 'Verified';
-        document.getElementById('statusBadge').className = 'badge badge-success';
-      }
+    const userId = user.uid || user.id;
+    if (!userId) return;
+
+    const { data, error } = await supabaseClient
+      .from('verifications')
+      .select('status')
+      .eq('user_id', userId)
+      .single();
+
+    // PGRST116 = no rows returned (still pending)
+    if (error && error.code !== 'PGRST116') throw error;
+
+    if (data && data.status === 'approved') {
+      document.getElementById('statusIcon').textContent = '✓';
+      document.getElementById('statusIcon').classList.remove('pending');
+      document.getElementById('statusTitle').textContent = 'Verified Seller!';
+      document.getElementById('statusText').textContent = 'Congratulations! You are now a verified seller on NijaSwap.';
+      document.getElementById('statusBadge').textContent = 'Verified';
+      document.getElementById('statusBadge').className = 'badge badge-success';
     }
-  } catch (e) { console.error(e); }
-});
+  } catch (e) {
+    console.error('Verification check error:', e);
+  }
+})();
 </script>
 
 </body>
