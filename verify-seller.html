@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Seller | NijaSwap</title>
+<title>Verify Seller | NaijaSwap</title>
 <style>
 :root {
   --primary: #ff6b35; --primary-light: #ff8f66; --primary-dark: #e55a2b;
@@ -130,7 +130,7 @@ footer {
 <body>
 
 <header class="topbar">
-  <div class="logo"><a href="index.html">🔥 <span>NijaSwap</span></a></div>
+  <div class="logo"><a href="index.html">🔥 <span>NaijaSwap</span></a></div>
   <nav>
     <a href="index.html">Home</a>
     <a href="listings.html">Listings</a>
@@ -232,33 +232,32 @@ footer {
   <div class="company-footer">RadiantWaves Media Ltd &bull; Registered Company &bull; Secure Escrow Payments &bull; Verified Sellers &bull; Global Shipping &bull; B2B Export Desk</div>
 </footer>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://kysnaeklegcazdwfgxysy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5c25hZWtsZWdjYXpkd2ZneHN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MjI4MjksImV4cCI6MjA5OTA5ODgyOX0.SQiVyeqQs9lcwree7QRjLqW0Pmbrz2Tq_2MEtwvutsk';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "naijaswap-new.firebaseapp.com",
-  databaseURL: "https://naijaswap-new-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "naijaswap-new",
-  storageBucket: "naijaswap-new.firebasestorage.app",
-  messagingSenderId: "138315357891",
-  appId: "1:138315357891:web:83fecc932654a8cb740c76",
-  measurementId: "G-SQ2P17NWTZ"
-};
+let currentUser = null;
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+function getCurrentUser() {
+  const userData = localStorage.getItem('naijaswap_user');
+  if (userData) { try { return JSON.parse(userData); } catch (e) { return null; } }
+  return null;
+}
 
-onAuthStateChanged(auth, (user) => {
-  if (!user) { window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href); return; }
-});
-
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await signOut(auth); window.location.href = 'index.html';
-});
+function initAuth() {
+  currentUser = getCurrentUser();
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (!currentUser) {
+    window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+    return;
+  }
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('naijaswap_user');
+    window.location.href = 'index.html';
+  });
+}
 
 function showError(msg) {
   const el = document.getElementById('errorMsg');
@@ -273,8 +272,7 @@ function showSuccess(msg) {
 }
 
 window.submitVerification = async function() {
-  const user = auth.currentUser;
-  if (!user) { showError('Please login first'); return; }
+  if (!currentUser) { showError('Please login first'); return; }
 
   const legalName = document.getElementById('legalName').value.trim();
   const phone = document.getElementById('phone').value.trim();
@@ -293,26 +291,30 @@ window.submitVerification = async function() {
   text.innerHTML = '<span class="spinner"></span>Submitting...';
 
   try {
-    await setDoc(doc(db, "verifications", user.uid), {
-      userId: user.uid,
-      legalName,
-      phone,
-      shopName: document.getElementById('shopName').value.trim(),
-      address,
-      idType,
-      idNumber,
+    const { error } = await supabaseClient.from('verifications').insert({
+      user_id: currentUser.uid || currentUser.id,
+      legal_name: legalName,
+      phone: phone,
+      shop_name: document.getElementById('shopName').value.trim() || null,
+      address: address,
+      id_type: idType,
+      id_number: idNumber,
       status: 'pending',
-      submittedAt: serverTimestamp()
+      submitted_at: new Date().toISOString()
     });
+
+    if (error) throw error;
 
     showSuccess('✅ Verification submitted! We will review within 24-48 hours.');
     setTimeout(() => window.location.href = 'verified.html', 2000);
   } catch (err) {
-    showError(err.message);
+    showError(err.message || 'Submission failed. Please try again.');
     btn.disabled = false;
     text.textContent = 'Submit for Verification';
   }
 };
+
+initAuth();
 </script>
 
 </body>
