@@ -135,10 +135,12 @@ footer {
     <a href="index.html">Home</a>
     <a href="listings.html">Listings</a>
     <a href="sell.html">Sell</a>
+    <a href="trade.html">Trade Desk</a>
+    <a href="requests.html">Requests</a>
+    <a href="news.html">News & Export Guide</a>
     <a href="chat.html">Chat</a>
     <a href="wallet.html">Wallet</a>
     <a href="payments.html">Payments</a>
-    <a href="delivery.html">Delivery</a>
     <a href="profile.html">Profile</a>
   </nav>
   <div class="header-actions">
@@ -220,12 +222,14 @@ footer {
 
 <footer>
   <div class="footer-grid">
-    <div><h3>NijaSwap</h3><p>A global marketplace connecting buyers and sellers securely.</p></div>
+    <div><h3>NaijaSwap</h3><p>A global marketplace + B2B trade desk connecting verified African suppliers with international buyers.</p><p style="margin-top:0.5rem;font-size:0.8rem;color:rgba(255,255,255,0.5);">A Product of RadiantWaves Media Ltd</p></div>
     <div><h3>Marketplace</h3><a href="listings.html">Browse Listings</a><a href="sell.html">Sell Item</a><a href="chat.html">Chat</a><a href="wallet.html">Wallet</a></div>
-    <div><h3>Support</h3><a href="#">Help Centre</a><a href="#">Safety Tips</a><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
-    <div><h3>Contact</h3><p>Email: support@naijaswap.com</p><p>Available Worldwide</p></div>
+    <div><h3>Global Trade</h3><a href="trade.html">Trade Desk</a><a href="requests.html">Buying Requests</a><a href="news.html">News & Export Guide</a><a href="crm.html">CRM Dashboard</a><a href="partners.html">Partners</a></div>
+    <div><h3>Support</h3><a href="help.html">Help Centre</a><a href="safety.html">Safety Tips</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+    <div><h3>Contact</h3><p>Email: <a href="mailto:support@radiantwavesmedia.com" style="display:inline;color:var(--primary-light);">support@radiantwavesmedia.com</a></p><p>Available Worldwide &bull; 45+ Countries</p></div>
   </div>
-  <div class="copyright">© 2026 NijaSwap. All Rights Reserved.</div>
+  <div class="copyright">&copy; 2026 NaijaSwap by RadiantWaves Media Ltd. All Rights Reserved.</div>
+  <div class="company-footer">RadiantWaves Media Ltd &bull; Registered Company &bull; Secure Escrow Payments &bull; Verified Sellers &bull; Global Shipping &bull; B2B Export Desk</div>
 </footer>
 
 <script type="module">
@@ -234,7 +238,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyALZ3W_u3i7udUybCtX00T1h7ZejQuCAiI",
+  apiKey: "YOUR_FIREBASE_API_KEY",
   authDomain: "naijaswap-new.firebaseapp.com",
   databaseURL: "https://naijaswap-new-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "naijaswap-new",
