@@ -855,46 +855,73 @@ function detectTransactionType() {
 }
 
 /* ---- DYNAMIC ORDER SUMMARY ---- */
+function fmtMoney(val, currency) {
+  if (val === 0 || val === '' || isNaN(val)) return '—';
+  return currency + parseFloat(val).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
 function loadOrderFromURL() {
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || 'local';
+  const hasParams = params.has('product') || params.has('price');
 
   if (type === 'b2b' || type === 'intl') {
     // Populate B2B summary
-    const product = params.get('product') || 'Selected Product';
-    const qty = params.get('qty') || params.get('quantity') || '1';
-    const unitPrice = params.get('unitPrice') || params.get('price') || '0';
+    const product = params.get('product');
+    const qty = params.get('qty') || params.get('quantity') || '';
+    const unitPrice = params.get('unitPrice') || params.get('price') || '';
     const currency = params.get('currency') || '$';
     const shipping = parseFloat(params.get('shipping') || '0');
+    const unit = params.get('unit') || '';
 
-    const subtotal = parseFloat(unitPrice) * parseFloat(qty);
-    const escrowFee = subtotal * 0.015;
-    const total = subtotal + shipping + escrowFee;
+    if (hasParams) {
+      const subtotal = parseFloat(unitPrice || 0) * parseFloat(qty || 0);
+      const escrowFee = subtotal * 0.015;
+      const total = subtotal + shipping + escrowFee;
 
-    document.getElementById('b2bProduct').textContent = decodeURIComponent(product);
-    document.getElementById('b2bQty').textContent = qty + (params.get('unit') || ' units');
-    document.getElementById('b2bUnitPrice').textContent = currency + parseFloat(unitPrice).toLocaleString(undefined, {minimumFractionDigits:2}) + (params.get('unit') ? ' / ' + params.get('unit') : '');
-    document.getElementById('b2bSubtotal').textContent = currency + subtotal.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('b2bShipping').textContent = currency + shipping.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('b2bEscrowFee').textContent = currency + escrowFee.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('b2bTotal').textContent = currency + total.toLocaleString(undefined, {minimumFractionDigits:2});
+      document.getElementById('b2bProduct').textContent = decodeURIComponent(product);
+      document.getElementById('b2bQty').textContent = qty + (unit ? ' ' + unit : ' units');
+      document.getElementById('b2bUnitPrice').textContent = fmtMoney(unitPrice, currency) + (unit ? ' / ' + unit : '');
+      document.getElementById('b2bSubtotal').textContent = fmtMoney(subtotal, currency);
+      document.getElementById('b2bShipping').textContent = fmtMoney(shipping, currency);
+      document.getElementById('b2bEscrowFee').textContent = fmtMoney(escrowFee, currency);
+      document.getElementById('b2bTotal').textContent = fmtMoney(total, currency);
+    } else {
+      // No params — show placeholder
+      document.getElementById('b2bProduct').textContent = '—';
+      document.getElementById('b2bQty').textContent = '—';
+      document.getElementById('b2bUnitPrice').textContent = '—';
+      document.getElementById('b2bSubtotal').textContent = '—';
+      document.getElementById('b2bShipping').textContent = '—';
+      document.getElementById('b2bEscrowFee').textContent = '—';
+      document.getElementById('b2bTotal').textContent = '—';
+    }
 
     // Switch to international tab
     switchTab('intl');
   } else {
     // Populate Local summary
-    const product = params.get('product') || 'Selected Product';
+    const product = params.get('product');
     const price = parseFloat(params.get('price') || '0');
     const currency = params.get('currency') || '₦';
     const delivery = parseFloat(params.get('delivery') || '0');
     const escrow = parseFloat(params.get('escrow') || '0');
-    const total = price + delivery + escrow;
 
-    document.getElementById('localItem').textContent = decodeURIComponent(product);
-    document.getElementById('localPrice').textContent = currency + price.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('localDelivery').textContent = currency + delivery.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('localFee').textContent = currency + escrow.toLocaleString(undefined, {minimumFractionDigits:2});
-    document.getElementById('localTotal').textContent = currency + total.toLocaleString(undefined, {minimumFractionDigits:2});
+    if (hasParams) {
+      const total = price + delivery + escrow;
+      document.getElementById('localItem').textContent = decodeURIComponent(product);
+      document.getElementById('localPrice').textContent = fmtMoney(price, currency);
+      document.getElementById('localDelivery').textContent = fmtMoney(delivery, currency);
+      document.getElementById('localFee').textContent = fmtMoney(escrow, currency);
+      document.getElementById('localTotal').textContent = fmtMoney(total, currency);
+    } else {
+      // No params — show placeholder
+      document.getElementById('localItem').textContent = '—';
+      document.getElementById('localPrice').textContent = '—';
+      document.getElementById('localDelivery').textContent = '—';
+      document.getElementById('localFee').textContent = '—';
+      document.getElementById('localTotal').textContent = '—';
+    }
 
     switchTab('local');
   }
